@@ -1,0 +1,25 @@
+name: Sync to GitLab
+
+on:
+  push:
+    branches:
+      - "**" # This triggers on every branch push
+  delete:
+    branches:
+      - "**" # This syncs branch deletions
+
+jobs:
+  mirror_to_gitlab:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required to get all history/branches
+
+      - name: Mirror to GitLab
+        uses: pixta-dev/repository-mirroring-action@v1
+        with:
+          # Replace this with your actual GitLab SSH clone URL
+          target_repo_url: git@gitlab.liu.se:albla038/tddd27_2026_group_9.git
+          ssh_private_key: ${{ secrets.GITLAB_SSH_PRIVATE_KEY }}
