@@ -128,9 +128,20 @@ The user can add new expenses and incomes via a button. The user can edit and de
 
 ## 5. Wireframes & Figma Mockups
 
-<!-- TODO -->
+_When designing the UI, we will design with mobile-first in mind. If time allows, we will also implement a desktop version of the application (this version may use different components and interactions more suitable for desktop). More mockups will be designed iteratively during the project, before implementing each feature._
 
-_To be added..._
+#### Transaction list, and new transaction form in a drawer
+
+<p>
+  <img src="./.github/assets/transactions-mockup.svg" alt="Transaction design mockup" width="32%" />
+  <img src="./.github/assets/new-transaction-mockup.svg" alt="New transaction design mockup" width="32%" />
+</p>
+
+#### Category settings page
+
+<p>
+  <img src="./.github/assets/category-settings-mockup.svg" alt="Category settings design mockup" width="32%" />
+</p>
 
 ## 6. Database Schema (Preliminary)
 
