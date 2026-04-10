@@ -140,50 +140,53 @@ _To be added..._
 
 ```text
 root/
-├── app/                          # Next.js App Router: Pages, layouts, and routing
-│   ├── api/                      # Route handlers (API routes)
-│   ├── budget/[year]/[month]     # Dynamic budgeting route
-│   │   ├── _components/          # Co-located local components (budget items, charts, ...)
-│   │   ├── page.tsx              # Budget page component (server component)
-│   │   └── actions.ts            # Server functions for budget mutations
-│   ├── dashboard/                # Home dashboard route
-│   │   ├── _components/          # Co-located local components (charts, summaries, ...)
-│   │   └── page.tsx              # Dashboard page component (server component)
-│   ├── login/                    # Login route
-│   │   ├── _components/          # Co-located local components (login button, ...)
-│   │   └── page.tsx              # Login with Google OAuth page component (server component)
-│   ├── transactions/             # Transactions route
-│   │   ├── _components/          # Co-located local components (list items, filters, ...)
-│   │   ├── _queries/             # TanStack Query hooks for optimistic updates and infinite scroll
-│   │   ├── page.tsx              # Transactions page component (server component)
-│   │   ├── actions.ts            # Server functions for transaction mutations
-│   │   └── api-client.ts         # Better Fetch API client code
-│   ├── globals.css               # Global stylesheets with Tailwind CSS
-│   ├── layout.tsx                # Root layout for the application
-│   └── page.tsx                  # Root landing page
-├── components/                   # Global reusable React components
-│   ├── shared/                   # Shared components used across multiple routes (dialogs, drawers, ...)
-│   └── ui/                       # Base UI elements (shadcn/ui primitives, buttons, inputs, ...)
-├── data/                         # Database access layer (DAL)
-│   ├── budget/                   # Queries and mutations related to budgets
-│   ├── transaction/              # Queries and mutations related to transactions
-│   └── user/                     # Functions to verify user access tokens and fetch user data
-├── hooks/                        # Custom React hooks
-├── lib/                          # Utility functions, helpers, and constants
-├── prisma/                       # Prisma schema, generated client, seeding data and development DB files
-├── providers/                    # React context providers
-├── public/                       # Static assets
-├── schemas/                      # Shared Zod schemas
-├── types/                        # TypeScript type definitions and interfaces
-├── .env                          # Environment variables (database credentials, API keys)
-├── .gitignore                    # Git ignore file
-├── .prettierrc                   # Prettier configuration for code formatting
-├── components.json               # shadcn/ui configuration
-├── eslint.config.mjs             # ESLint configuration for code linting
-├── next.config.js                # Next.js configuration file
-├── package.json                  # Project dependencies and scripts
-├── README.md                     # Project specification and documentation (this file)
-└── tsconfig.json                 # TypeScript configuration
+├── app/                              # Next.js App Router: Pages, layouts, and routing
+│   ├── (dashboard)/                  # Dashboard route group
+│   │   ├── budget/[year]/[month]     # Dynamic budgeting route
+│   │   │   ├── _components/          # Co-located local components (budget items, charts, ...)
+│   │   │   ├── page.tsx              # Budget page component (server component)
+│   │   │   └── actions.ts            # Server functions for budget mutations
+│   │   ├── dashboard/                # Home dashboard route
+│   │   │   ├── _components/          # Co-located local components (charts, summaries, ...)
+│   │   │   └── page.tsx              # Dashboard page component (server component)
+│   │   ├── settings/                 # Settings route
+│   │   └── transactions/             # Transactions route
+│   │       ├── _components/          # Co-located local components (list items, filters, ...)
+│   │       ├── _queries/             # TanStack Query hooks for optimistic updates and infinite scroll
+│   │       ├── page.tsx              # Transactions page component (server component)
+│   │       ├── actions.ts            # Server functions for transaction mutations
+│   │       └── api-client.ts         # Better Fetch API client code
+│   ├── api/                          # Route handlers (API routes)
+│   ├── login/                        # Login route
+│   │   ├── _components/              # Co-located local components (login button, ...)
+│   │   └── page.tsx                  # Login with Google OAuth page component (server component)
+│   ├── globals.css                   # Global stylesheets with Tailwind CSS
+│   ├── layout.tsx                    # Root layout for the application
+│   └── page.tsx                      # Root landing page
+├── components/                       # Global reusable React components
+│   ├── shared/                       # Shared components used across multiple routes (dialogs, drawers, ...)
+│   └── ui/                           # Base UI elements (shadcn/ui primitives, buttons, inputs, ...)
+├── data/                             # Database access layer (DAL)
+│   ├── budget/                       # Queries and mutations related to budgets
+│   ├── category/                     # Queries and mutations related to categories
+│   ├── transaction/                  # Queries and mutations related to transactions
+│   └── user/                         # Functions to verify user access tokens and fetch user data
+├── hooks/                            # Custom React hooks
+├── lib/                              # Utility functions, helpers, and constants
+├── prisma/                           # Prisma schema, generated client, seeding data and development DB files
+├── providers/                        # React context providers
+├── public/                           # Static assets
+├── schemas/                          # Shared Zod schemas
+├── types/                            # TypeScript type definitions and interfaces
+├── .env                              # Environment variables (database credentials, API keys)
+├── .gitignore                        # Git ignore file
+├── .prettierrc                       # Prettier configuration for code formatting
+├── components.json                   # shadcn/ui configuration
+├── eslint.config.mjs                 # ESLint configuration for code linting
+├── next.config.js                    # Next.js configuration file
+├── package.json                      # Project dependencies and scripts
+├── README.md                         # Project specification and documentation (this file)
+└── tsconfig.json                     # TypeScript configuration
 ```
 
 ## 8. Data Fetching & Mutation Patterns
