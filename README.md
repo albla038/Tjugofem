@@ -108,7 +108,7 @@ The user can add new expenses and incomes via a button. The user can edit and de
 
   _Next.js also supports Client components, which (just like normal React components) allows for interactivity with state, event handlers, and other browser APIs. Server functions can be used in both server and client components, which allows for seamless data mutations in both environments._
 
-  _[Route handlers (API endpoints)](https://nextjs.org/docs/app/getting-started/route-handlers) will be used by client components for client side data fetching. Examples are inifinte scroll or optimistic updates (which is not possible with server components, since they don't have access to React state or support event handlers)._
+  _[Route handlers (API endpoints)](https://nextjs.org/docs/app/getting-started/route-handlers) will be used by client components for client side data fetching. Examples are infinte scroll or optimistic updates (which is not possible with server components, since they don't have access to React state or support event handlers)._
 
 - **Database:** [PostgreSQL](https://www.postgresql.org/) with [Prisma ORM](https://www.prisma.io/docs) - _Prisma is an Object-Relational Mapping (ORM) tool that provides a TypeScript-client for interacting with databases. This means that queries and mutations can be defined directly as TypeScript objects with full type safety, which Prisma translates into database queries under the hood._
 
@@ -186,16 +186,71 @@ root/
 └── tsconfig.json                 # TypeScript configuration
 ```
 
-## 8. Data Fetching & Mutation Strategies
+## 8. Data Fetching & Mutation Patterns
 
-_To be added..._
+_Here, we outline patterns for data fetching and mutations in our Next.js application, leveraging server components, server functions, and client components where appropriate._
 
-<!-- TODO -->
-<!-- ### Data Fetching Flow -->
+### General Architecture
 
-<!-- ### Data Mutation Flow -->
+**Prisma Client:** `lib/db.ts` - Singleton instance of Prisma Client for database access.
 
-## 9. Routines
+**[Data Access Layer (DAL)](https://nextjs.org/docs/app/guides/data-security#data-access-layer):** `data/**/*.ts` - Direct database queries with the Prisma Client. Validates data access via user authentication (and possibly data ownership via authorization). Runs only on the server.
+
+**[Server Actions (Functions)](https://nextjs.org/docs/app/getting-started/mutating-data#what-are-server-functions):** - `**/actions.ts` User-triggered mutations and revalidation. Automatically sets up API endpoints under the hood, which can be called from both server and client components.
+
+**Components:** Server Components for fetching directly on the server, Client Components for interactivity, to trigger mutations and client-side fetching.
+
+[**TanStack Query**](https://tanstack.com/query/latest/docs/framework/react/overview): For client-side data fetching, caching, and synchronization. Used in Client Components for features like infinite scroll and optimistic updates.
+
+### Data Fetching in Server Components
+
+Always strive for [fetching data directly in Server Components](https://nextjs.org/docs/app/getting-started/fetching-data#server-components) when possible. This reduces boilerplate and complexity since you can fetch data directly on the server-side without needing to set up API endpoints or client-side state management.
+
+- Fetching is done directly in the **Server Component** via the **DAL**
+- The server component calls a function in the **DAL** where the actual database query logic is defined.
+- Potential transformations or data shaping is done in the **DAL** function
+
+### Data mutations with Server Actions
+
+Use [**Server Actions**](https://nextjs.org/docs/app/getting-started/mutating-data#creating-server-functions) for all POST, PUT, DELETE operations. There is no need to set up API endpoints for mutations, since Server Actions automatically create API endpoints under the hood and can be called from both Server and Client Components.
+
+> If the mutation data comes from a form, preferably perform **client-side validation** first (with React Hook Form and Zod)
+
+A Server Action typically performs the following steps:
+
+1. Authenticate the user (with the `requireUser()` utility in the DAL)
+2. Validate input data to the Action with Zod. _Note: If the data already has been validated on the client, reuse the same schema for validation on the server._
+3. Call a **DAL** function for the actual database mutation
+4. Use [revalidatePath or revalidateTag](https://nextjs.org/docs/app/getting-started/mutating-data#revalidate-data) to purge the cache
+5. (Optional) Return data to the client
+
+If any of the steps fail, [return an error message](https://nextjs.org/docs/app/getting-started/error-handling#handling-expected-errors), **do not throw.**
+
+### Client-side data fetching
+
+When a UI interaction requires data fetching as a result of a user action (such as infinite scroll, optimistic updates, or fetching data on demand in a dialog), use [**Client Components**](https://nextjs.org/docs/app/getting-started/fetching-data#client-components) with [**TanStack Query**](https://tanstack.com/query/latest/docs/framework/react/overview) for client-side data fetching.
+
+A client-side fetching flow typically performs the following steps:
+
+**On the Client (Request):**
+
+1. The user triggers a data fetch
+2. A TanStack Query hook calls a Next.js [Route Handler](https://nextjs.org/docs/app/getting-started/route-handlers) (API Endpoint) using Better Fetch, passing any necessary query parameters.
+
+**On the Server (Route Handler):**
+
+3. Authenticate the user (with the `verifyUser()` utility in the DAL).
+4. Validate any query parameters with Zod.
+5. Call a **DAL** function for the actual database query.
+6. Return the fetched data to the client as a JSON response.
+
+**On the Client (Response):**
+
+7. The Query hook receives the data and TanStack Query automatically updates the UI and caching state.
+
+_If any of the server steps fail, an appropriate HTTP error response is returned, which is caught and handled by TanStack Query on the client._
+
+## 9. Git Routines
 
 ### Commit message format:
 
@@ -209,7 +264,10 @@ Refer to: [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
 
 `<type>/<description>`
 
-Example: `feature/infinite-scroll-transactions`
+Examples:
+
+- `feat/infinite-scroll-transactions`
+- `fix/header-bug`
 
 Refer to: [Conventional Branch](https://conventional-branch.github.io/) for more details and examples.
 
