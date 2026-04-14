@@ -16,6 +16,25 @@ enum TransactionType {
   SAVING
 }
 
+model Transaction {
+  id            String          @id @default(cuid(2))
+  // Store amount in cents/ören to avoid floating-point issues without using Decimal.js
+  amountInCents Int
+  type          TransactionType
+  name          String
+  date          DateTime
+
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("transactions")
+}
+
 model Category {
   id   String          @id @default(cuid(2))
   name String
@@ -25,23 +44,25 @@ model Category {
   user   User   @relation(fields: [userId], references: [id])
   userId String
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  transactions Transaction[]
 
   @@map("categories")
 }
 
 model User {
-  id            String     @id
+  id            String        @id
   name          String
-  email         String     @unique
-  emailVerified Boolean    @default(false)
+  email         String        @unique
+  emailVerified Boolean       @default(false)
   image         String?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
   sessions      Session[]
   accounts      Account[]
   categories    Category[]
+  transactions  Transaction[]
 
   @@map("users")
 }
