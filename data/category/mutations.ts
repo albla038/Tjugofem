@@ -1,6 +1,5 @@
 import prisma from "@/lib/db";
 import { TransactionType } from "@/lib/generated/prisma/enums";
-import { requireUser } from "../user/verify-user";
 import { User } from "better-auth";
 
 const defaultCategories: { name: string; type: TransactionType }[] = [
@@ -21,6 +20,14 @@ const defaultCategories: { name: string; type: TransactionType }[] = [
     type: "EXPENSE",
   },
   {
+    name: "Telefoni",
+    type: "EXPENSE",
+  },
+  {
+    name: "Övrig utgift",
+    type: "EXPENSE"
+  },
+  {
     name: "Fondsparande",
     type: "SAVING",
   },
@@ -34,6 +41,10 @@ const defaultCategories: { name: string; type: TransactionType }[] = [
   },
   {
     name: "CSN",
+    type: "INCOME",
+  },
+  {
+    name: "Övrig inkomst",
     type: "INCOME",
   },
 ];
