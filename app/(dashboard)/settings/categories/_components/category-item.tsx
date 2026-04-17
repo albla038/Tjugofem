@@ -14,17 +14,14 @@ type CategoryItemProps = {
   name: string;
   icon: ReactNode;
   id: string;
-  onClick: (id: string) => void;
 };
 
-export default function CategoryItem({
-  name,
-  icon,
-  id,
-  onClick,
-}: CategoryItemProps) {
+export default function CategoryItem({ name, icon, id }: CategoryItemProps) {
   return (
-    <Item onClick={() => onClick(id)}>
+    <Item
+      onClick={() => alert(`Clicked item ${name} in category list`)}
+      className="cursor-pointer"
+    >
       <ItemMedia variant="icon">{icon}</ItemMedia>
       <ItemContent>
         <ItemTitle>{name}</ItemTitle>
