@@ -13,15 +13,11 @@ import { TransactionWithCategory } from "@/data/transaction/queries";
 
 type TransactionItemProps = {
   item: TransactionWithCategory;
-  onClick: (id: string) => void;
 };
 
-export default function TransactionItem({
-  item,
-  onClick,
-}: TransactionItemProps) {
-  const date = item.date.toLocaleDateString("sv-SV");
-  const amount = (item.amountInCents / 100).toLocaleString("sv-SV", {
+export default function TransactionItem({ item }: TransactionItemProps) {
+  const date = item.date.toLocaleDateString("sv-SE");
+  const amount = (item.amountInCents / 100).toLocaleString("sv-SE", {
     style: "currency",
     currency: "SEK",
   });
@@ -29,7 +25,7 @@ export default function TransactionItem({
   const amountString = isExpense ? `-${amount}` : amount;
 
   return (
-    <Item onClick={() => onClick(item.id)}>
+    <Item size="sm" onClick={() => alert("Clicked transaction with id: " + item.id)}>
       <ItemMedia>
         <CategoryIcon category={item.category} />
       </ItemMedia>
