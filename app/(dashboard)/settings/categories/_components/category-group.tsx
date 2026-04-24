@@ -6,12 +6,11 @@ import {
 import CategoryItem from "./category-item";
 import { House } from "lucide-react";
 import { Category, TransactionType } from "@/lib/generated/prisma/client";
-
-const transactionTypeTitle: Record<TransactionType, string> = {
-  EXPENSE: "Utgifter",
-  INCOME: "Inkomster",
-  SAVING: "Sparande",
-};
+import { Button } from "@/components/ui/button";
+import {
+  transactionTypeTitlePlural,
+  transactionTypeTitleSingular,
+} from "@/lib/constants";
 
 type CategoryGroupProps = {
   type: TransactionType;
@@ -29,7 +28,7 @@ export default function CategoryGroup({
   return (
     <AccordionItem value={type}>
       <AccordionTrigger className="cursor-pointer">
-        {transactionTypeTitle[type]}
+        {transactionTypeTitlePlural[type]}
       </AccordionTrigger>
       <AccordionContent>
         {filteredCategories.map((category) => (
