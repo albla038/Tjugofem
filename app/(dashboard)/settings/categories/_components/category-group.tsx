@@ -4,7 +4,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import CategoryItem from "./category-item";
-import { House } from "lucide-react";
+import { House, Plus } from "lucide-react";
 import { Category, TransactionType } from "@/lib/generated/prisma/client";
 import { Button } from "@/components/ui/button";
 import {
@@ -39,6 +39,10 @@ export default function CategoryGroup({
             key={category.id}
           />
         ))}
+
+        <Button variant="ghost" className="w-full">
+          <Plus /> Lägg till {transactionTypeTitleSingular[type].toLowerCase()}
+        </Button>
       </AccordionContent>
     </AccordionItem>
   );
