@@ -3,9 +3,9 @@ import z from "zod";
 
 const transactionCreateBaseSchema = z.object({
   type: z.enum(TransactionType),
-  name: z.string().min(1, "Namnet måste ha minst en bokstav"),
-  date: z.coerce.date(),
-  categoryId: z.cuid2(),
+  name: z.string().min(1, "Transaktionen måste ha ett namn"),
+  date: z.date(),
+  categoryId: z.cuid2("Ange en kategori"),
 });
 
 export const transactionCreateFormSchema = transactionCreateBaseSchema.extend({
