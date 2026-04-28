@@ -1,6 +1,14 @@
+"use client";
+
+import TransactionAddForm from "@/app/(dashboard)/transactions/_components/add-form";
 import TransactionGroup from "@/app/(dashboard)/transactions/_components/transaction-group";
+import Drawer from "@/components/drawer";
+import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { TransactionWithCategory } from "@/data/transaction/queries";
+import { Category } from "@/lib/generated/prisma/client";
+import { MoreVertical, Plus } from "lucide-react";
+import { useState } from "react";
 
 function groupTransactionsByMonth(transactions: TransactionWithCategory[]) {
   const groups = new Map<string, TransactionWithCategory[]>();
@@ -30,22 +38,54 @@ function groupTransactionsByMonth(transactions: TransactionWithCategory[]) {
 
 type TransactionsListProps = {
   transactions: TransactionWithCategory[];
+  categories: Category[];
 };
 
 export default function TransactionList({
   transactions,
+  categories,
 }: TransactionsListProps) {
+  const [addDrawerOpen, setAddDrawerOpen] = useState(false);
+
   const monthGroups = groupTransactionsByMonth(transactions);
 
   return (
-    <ScrollArea className="h-svh">
-      {monthGroups.map(({ monthKey, transactions }) => (
-        <TransactionGroup
-          key={monthKey}
-          groupTitle={monthKey.charAt(0).toUpperCase() + monthKey.slice(1)}
-          transactions={transactions}
+    <>
+      <ScrollArea className="h-svh">
+        {monthGroups.map(({ monthKey, transactions }) => (
+          <TransactionGroup
+            key={monthKey}
+            groupTitle={monthKey.charAt(0).toUpperCase() + monthKey.slice(1)}
+            transactions={transactions}
+          />
+        ))}
+      </ScrollArea>
+
+      <Button
+        size="icon-lg"
+        className="fixed right-4 bottom-4 z-20 rounded-full"
+        onClick={() => setAddDrawerOpen((prev) => !prev)}
+      >
+        <Plus />
+      </Button>
+
+      <Drawer
+        title="Ny transaktion"
+        description="Lägg till ny utgift, inkomst eller besparing"
+        open={addDrawerOpen}
+        onOpenChange={setAddDrawerOpen}
+        drawerAction={
+          // TODO: Add dropdownMenu
+          <Button size="icon" variant="ghost" disabled>
+            <MoreVertical />
+          </Button>
+        }
+      >
+        <TransactionAddForm
+          categories={categories}
+          onClose={() => setAddDrawerOpen(false)}
         />
-      ))}
-    </ScrollArea>
+      </Drawer>
+    </>
   );
 }
