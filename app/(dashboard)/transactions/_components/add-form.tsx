@@ -1,5 +1,6 @@
 "use client";
 
+import { createTransactionAction } from "@/app/(dashboard)/transactions/actions";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -26,9 +27,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CATEGORY_ICON_MAP } from "@/lib/category-icon-map";
 import { transactionTypeTitleSingular } from "@/lib/constants";
+import { MUTATION_ERROR_MESSAGE_FALLBACK } from "@/lib/error-message-fallbacks";
 import { Category } from "@/lib/generated/prisma/client";
 import { TransactionType } from "@/lib/generated/prisma/enums";
 import {
@@ -36,18 +39,34 @@ import {
   TransactionCreateForm,
   transactionCreateFormSchema,
 } from "@/schemas/transaction";
+import { ActionErrorCode } from "@/types/error-codes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
-import { CalendarIcon, CircleDashed, Coins, Divide, Pen } from "lucide-react";
+import { CalendarIcon, CircleDashed, Coins, Pen } from "lucide-react";
+import { useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
+
+function getErrorMessage(errorCode: ActionErrorCode) {
+  switch (errorCode) {
+    case "UNAUTHORIZED":
+      return "Du måste vara inloggad för att skapa en transaktion.";
+    case "VALIDATION_FAILED":
+      return "Något gick fel med de angivna uppgifterna. Kontrollera och försök igen.";
+    default:
+      return MUTATION_ERROR_MESSAGE_FALLBACK;
+  }
+}
 
 type TransactionAddFormProps = {
   categories: Category[];
+  onClose: () => void;
 };
 
 export default function TransactionAddForm({
   categories,
+  onClose,
 }: TransactionAddFormProps) {
   const form = useForm({
     resolver: zodResolver(transactionCreateFormSchema),
@@ -60,16 +79,29 @@ export default function TransactionAddForm({
     },
   });
 
+  const [isPending, startTransition] = useTransition();
+
   function onSubmit(data: TransactionCreateForm) {
     const transformedData: TransactionCreate = {
       ...data,
       amountInCents: Math.round(data.amount * 100),
     };
-    console.log(transformedData);
+
+    startTransition(async () => {
+      const response = await createTransactionAction(transformedData);
+
+      if (!response.success) {
+        toast.error(getErrorMessage(response.errorCode));
+        return;
+      }
+
+      form.reset();
+      toast.success(`${transactionTypeTitleSingular[data.type]} tillagd!`);
+    });
   }
 
   return (
-    <form className="p-4" onSubmit={form.handleSubmit(onSubmit)} noValidate>
+    <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
       <FieldGroup>
         <div className="grid gap-2">
           {/* Amount */}
@@ -214,7 +246,18 @@ export default function TransactionAddForm({
         </div>
 
         <Field>
-          <Button type="submit">Submit</Button>
+          <Button type="submit" disabled={isPending}>
+            {isPending ? (
+              <>
+                <Spinner /> Lägger till...
+              </>
+            ) : (
+              "Lägg till"
+            )}
+          </Button>
+          <Button variant="outline" type="button" onClick={onClose}>
+            Avbryt
+          </Button>
         </Field>
       </FieldGroup>
     </form>
