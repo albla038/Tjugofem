@@ -19,9 +19,16 @@ export const transactionFormSchema = transactionBaseSchema.extend({
     })
     .pipe(z.number().positive("Ange ett positivt belopp")),
 });
-export type TransactionForm = z.infer<typeof transactionFormSchema>;
 
 export const transactionCreateSchema = transactionBaseSchema.extend({
   amountInCents: z.int().positive(),
 });
+
+export const transactionUpdateSchema = transactionBaseSchema.extend({
+  id: z.cuid2(),
+  amountInCents: z.int().positive(),
+});
+
+export type TransactionForm = z.infer<typeof transactionFormSchema>;
 export type TransactionCreate = z.infer<typeof transactionCreateSchema>;
+export type TransactionUpdate = z.infer<typeof transactionUpdateSchema>;
