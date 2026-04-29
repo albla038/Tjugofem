@@ -10,6 +10,7 @@ export async function fetchAllCategories(): Promise<Category[]> {
   try {
     const categories = await prisma.category.findMany({
       where: { userId: user.id },
+      orderBy: { name: "asc" },
     });
 
     return categories;
