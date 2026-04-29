@@ -212,10 +212,10 @@ export default function TransactionFormUI({
           <Button type="submit" disabled={isPending}>
             {isPending ? (
               <>
-                <Spinner /> Lägger till...
+                <Spinner /> Sparar...
               </>
             ) : (
-              "Lägg till"
+              "Spara"
             )}
           </Button>
           <Button variant="outline" type="button" onClick={onClose}>
