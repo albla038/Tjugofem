@@ -1,17 +1,14 @@
-"use client";
-
-import TransactionItem from "@/app/(dashboard)/transactions/_components/transaction-item";
 import { ItemGroup } from "@/components/ui/item";
-import { TransactionWithCategory } from "@/data/transaction/queries";
+import { ReactNode } from "react";
 
 type TransactionGroupProps = {
   groupTitle: string;
-  transactions: TransactionWithCategory[];
+  children: ReactNode;
 };
 
 export default function TransactionGroup({
   groupTitle,
-  transactions,
+  children,
 }: TransactionGroupProps) {
   return (
     <div>
@@ -19,11 +16,7 @@ export default function TransactionGroup({
         {groupTitle}
       </div>
 
-      <ItemGroup>
-        {transactions.map((transaction) => (
-          <TransactionItem key={transaction.id} item={transaction} />
-        ))}
-      </ItemGroup>
+      <ItemGroup>{children}</ItemGroup>
     </div>
   );
 }

@@ -1,6 +1,9 @@
 "use client";
 
+import TransactionEditForm from "@/app/(dashboard)/transactions/_components/edit-form";
 import CategoryIcon from "@/components/category-icon";
+import Drawer from "@/components/drawer";
+import { Button } from "@/components/ui/button";
 import {
   Item,
   ItemActions,
@@ -10,13 +13,22 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import { TransactionWithCategory } from "@/data/transaction/queries";
+import { Category } from "@/lib/generated/prisma/client";
 import { cn } from "@/lib/utils";
+import { MoreVertical } from "lucide-react";
+import { useState } from "react";
 
 type TransactionItemProps = {
   item: TransactionWithCategory;
+  categories: Category[];
 };
 
-export default function TransactionItem({ item }: TransactionItemProps) {
+export default function TransactionItem({
+  item,
+  categories,
+}: TransactionItemProps) {
+  const [isEditing, setIsEditing] = useState(false);
+
   const date = item.date.toLocaleDateString("sv-SE");
   const amount = (item.amountInCents / 100).toLocaleString("sv-SE", {
     style: "currency",
@@ -26,31 +38,53 @@ export default function TransactionItem({ item }: TransactionItemProps) {
   const amountString = isExpense ? `-${amount}` : amount;
 
   return (
-    <Item
-      size="sm"
-      onClick={() => alert("Clicked transaction with id: " + item.id)}
-    >
-      <ItemMedia>
-        <CategoryIcon category={item.category} />
-      </ItemMedia>
-      <ItemContent>
-        <ItemTitle>{item.name}</ItemTitle>
-        <ItemDescription className="line-clamp-1">
-          {date} • {item.category.name}
-        </ItemDescription>
-      </ItemContent>
-      <ItemActions
-        className={cn(
-          "tabular-nums",
-          item.type === "INCOME"
-            ? "text-green-400"
-            : item.type === "SAVING"
-              ? "text-blue-400"
-              : ""
-        )}
+    <>
+      <Item
+        size="sm"
+        className="cursor-pointer"
+        onClick={() => setIsEditing(true)}
       >
-        {amountString}
-      </ItemActions>
-    </Item>
+        <ItemMedia>
+          <CategoryIcon category={item.category} />
+        </ItemMedia>
+        <ItemContent>
+          <ItemTitle>{item.name}</ItemTitle>
+          <ItemDescription className="line-clamp-1">
+            {date} • {item.category.name}
+          </ItemDescription>
+        </ItemContent>
+        <ItemActions
+          className={cn(
+            "tabular-nums",
+            item.type === "INCOME"
+              ? "text-green-400"
+              : item.type === "SAVING"
+                ? "text-blue-400"
+                : ""
+          )}
+        >
+          {amountString}
+        </ItemActions>
+      </Item>
+
+      <Drawer
+        title="Redigera transaktion"
+        description="Redigera koperia eller länka transaktion" // TODO: Is all of this implemented?
+        open={isEditing}
+        onOpenChange={setIsEditing}
+        drawerAction={
+          // TODO: Add dropdownMenu
+          <Button size="icon" variant="ghost" disabled>
+            <MoreVertical />
+          </Button>
+        }
+      >
+        <TransactionEditForm
+          transaction={item}
+          categories={categories}
+          onClose={() => setIsEditing(false)}
+        />
+      </Drawer>
+    </>
   );
 }

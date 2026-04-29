@@ -2,6 +2,7 @@
 
 import TransactionAddForm from "@/app/(dashboard)/transactions/_components/add-form";
 import TransactionGroup from "@/app/(dashboard)/transactions/_components/transaction-group";
+import TransactionItem from "@/app/(dashboard)/transactions/_components/transaction-item";
 import Drawer from "@/components/drawer";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -45,7 +46,7 @@ export default function TransactionList({
   transactions,
   categories,
 }: TransactionsListProps) {
-  const [addDrawerOpen, setAddDrawerOpen] = useState(false);
+  const [isAddDrawerOpen, setAddDrawerOpen] = useState(false);
 
   const monthGroups = groupTransactionsByMonth(transactions);
 
@@ -56,15 +57,22 @@ export default function TransactionList({
           <TransactionGroup
             key={monthKey}
             groupTitle={monthKey.charAt(0).toUpperCase() + monthKey.slice(1)}
-            transactions={transactions}
-          />
+          >
+            {transactions.map((transaction) => (
+              <TransactionItem
+                key={transaction.id}
+                item={transaction}
+                categories={categories}
+              />
+            ))}
+          </TransactionGroup>
         ))}
       </ScrollArea>
 
       <Button
         size="icon-lg"
         className="fixed right-4 bottom-4 z-20 rounded-full"
-        onClick={() => setAddDrawerOpen((prev) => !prev)}
+        onClick={() => setAddDrawerOpen(true)}
       >
         <Plus />
       </Button>
@@ -72,7 +80,7 @@ export default function TransactionList({
       <Drawer
         title="Ny transaktion"
         description="Lägg till ny utgift, inkomst eller besparing"
-        open={addDrawerOpen}
+        open={isAddDrawerOpen}
         onOpenChange={setAddDrawerOpen}
         drawerAction={
           // TODO: Add dropdownMenu

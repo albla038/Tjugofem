@@ -62,7 +62,12 @@ export default function TransactionFormUI({
 
   return (
     <form
-      onSubmit={form.handleSubmit((data) => onSubmit(data, form.reset))}
+      onSubmit={form.handleSubmit((data) => {
+        // Prevent submission if no changes have been made
+        if (!form.formState.isDirty) return;
+
+        onSubmit(data, form.reset);
+      })}
       noValidate
     >
       <FieldGroup>
@@ -209,7 +214,7 @@ export default function TransactionFormUI({
         </div>
 
         <Field>
-          <Button type="submit" disabled={isPending}>
+          <Button type="submit" disabled={isPending || !form.formState.isDirty}>
             {isPending ? (
               <>
                 <Spinner /> Sparar...
