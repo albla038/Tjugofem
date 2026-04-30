@@ -1,9 +1,16 @@
 "use client";
 
+import TransactionDeleteAlert from "@/app/(dashboard)/transactions/_components/delete-alert";
 import TransactionEditForm from "@/app/(dashboard)/transactions/_components/edit-form";
 import CategoryIcon from "@/components/category-icon";
 import Drawer from "@/components/drawer";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Item,
   ItemActions,
@@ -15,7 +22,7 @@ import {
 import { TransactionWithCategory } from "@/data/transaction/queries";
 import { Category } from "@/lib/generated/prisma/client";
 import { cn } from "@/lib/utils";
-import { MoreVertical } from "lucide-react";
+import { MoreVertical, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 type TransactionItemProps = {
@@ -28,6 +35,7 @@ export default function TransactionItem({
   categories,
 }: TransactionItemProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const [isDeleteAlertOpen, setDeleteAlertOpen] = useState(false);
 
   const date = item.date.toLocaleDateString("sv-SE");
   const amount = (item.amountInCents / 100).toLocaleString("sv-SE", {
@@ -73,10 +81,22 @@ export default function TransactionItem({
         open={isEditing}
         onOpenChange={setIsEditing}
         drawerAction={
-          // TODO: Add dropdownMenu
-          <Button size="icon" variant="ghost" disabled>
-            <MoreVertical />
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="icon" variant="ghost">
+                <MoreVertical />
+              </Button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                variant="destructive"
+                onClick={() => setDeleteAlertOpen(true)}
+              >
+                <Trash2 /> Ta bort
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         }
       >
         <TransactionEditForm
@@ -85,6 +105,12 @@ export default function TransactionItem({
           onClose={() => setIsEditing(false)}
         />
       </Drawer>
+
+      <TransactionDeleteAlert
+        open={isDeleteAlertOpen}
+        onOpenChange={setDeleteAlertOpen}
+        transactionId={item.id}
+      />
     </>
   );
 }
