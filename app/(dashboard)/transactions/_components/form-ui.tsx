@@ -32,16 +32,19 @@ import { CATEGORY_ICON_MAP } from "@/lib/category-icon-map";
 import { transactionTypeTitleSingular } from "@/lib/constants";
 import { Category } from "@/lib/generated/prisma/client";
 import { TransactionType } from "@/lib/generated/prisma/enums";
-import { TransactionForm, transactionFormSchema } from "@/schemas/transaction";
+import {
+  TransactionForm,
+  TransactionFormInput,
+  transactionFormSchema,
+} from "@/schemas/transaction";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 import { CalendarIcon, CircleDashed, Coins, Pen } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
-import z from "zod";
 
 type TransactionFormUIProps = {
-  defaultValues: z.input<typeof transactionFormSchema>;
+  defaultValues: TransactionFormInput;
   onSubmit: (data: TransactionForm, resetForm: () => void) => void;
   isPending: boolean;
   categories: Category[];

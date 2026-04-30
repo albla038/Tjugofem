@@ -5,18 +5,14 @@ import { createTransactionAction } from "@/app/(dashboard)/transactions/actions"
 import { transactionTypeTitleSingular } from "@/lib/constants";
 import { MUTATION_ERROR_MESSAGE_FALLBACK } from "@/lib/error-message-fallbacks";
 import { Category } from "@/lib/generated/prisma/client";
-import { TransactionCreate, TransactionForm } from "@/schemas/transaction";
+import {
+  TransactionCreate,
+  TransactionForm,
+  TransactionFormInput,
+} from "@/schemas/transaction";
 import { ActionErrorCode } from "@/types/error-codes";
 import { useTransition } from "react";
 import { toast } from "sonner";
-
-const defaultValues = {
-  amount: "",
-  type: "EXPENSE" as const,
-  name: "",
-  date: new Date(),
-  categoryId: "",
-};
 
 function getErrorMessage(errorCode: ActionErrorCode) {
   switch (errorCode) {
@@ -31,11 +27,13 @@ function getErrorMessage(errorCode: ActionErrorCode) {
 
 type TransactionAddFormProps = {
   categories: Category[];
+  defaultValues: TransactionFormInput;
   onClose: () => void;
 };
 
 export default function TransactionAddForm({
   categories,
+  defaultValues,
   onClose,
 }: TransactionAddFormProps) {
   const [isPending, startTransition] = useTransition();

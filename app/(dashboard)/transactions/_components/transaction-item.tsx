@@ -22,17 +22,19 @@ import {
 import { TransactionWithCategory } from "@/data/transaction/queries";
 import { Category } from "@/lib/generated/prisma/client";
 import { cn } from "@/lib/utils";
-import { MoreVertical, Trash2 } from "lucide-react";
+import { CopyPlus, Link, MoreVertical, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 type TransactionItemProps = {
   item: TransactionWithCategory;
   categories: Category[];
+  onDuplicate: (transaction: TransactionWithCategory) => void;
 };
 
 export default function TransactionItem({
   item,
   categories,
+  onDuplicate,
 }: TransactionItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteAlertOpen, setDeleteAlertOpen] = useState(false);
@@ -88,12 +90,25 @@ export default function TransactionItem({
               </Button>
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="w-fit">
               <DropdownMenuItem
                 variant="destructive"
                 onClick={() => setDeleteAlertOpen(true)}
               >
                 <Trash2 /> Ta bort
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={() => {
+                  setIsEditing(false);
+                  onDuplicate(item);
+                }}
+              >
+                <CopyPlus /> Duplicera transaktion
+              </DropdownMenuItem>
+
+              <DropdownMenuItem>
+                <Link /> Länka transaktion
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

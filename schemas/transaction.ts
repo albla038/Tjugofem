@@ -30,5 +30,6 @@ export const transactionUpdateSchema = transactionBaseSchema.extend({
 });
 
 export type TransactionForm = z.infer<typeof transactionFormSchema>;
+export type TransactionFormInput = z.input<typeof transactionFormSchema>;
 export type TransactionCreate = z.infer<typeof transactionCreateSchema>;
 export type TransactionUpdate = z.infer<typeof transactionUpdateSchema>;
