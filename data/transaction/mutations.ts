@@ -58,3 +58,30 @@ export async function updateTransaction(
     return { ok: false, errorCode: "INTERNAL_ERROR" };
   }
 }
+
+export async function deleteTransaction(id: string): Promise<MutationResult> {
+  const user = await requireUser();
+
+  try {
+    await prisma.transaction.delete({
+      where: {
+        id,
+        // Ensure the user owns this transaction
+        userId: user.id,
+      },
+    });
+
+    return { ok: true, data: undefined };
+  } catch (error) {
+    console.error(error);
+
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
+      return { ok: false, errorCode: "NOT_FOUND" };
+    }
+
+    return { ok: false, errorCode: "INTERNAL_ERROR" };
+  }
+}
