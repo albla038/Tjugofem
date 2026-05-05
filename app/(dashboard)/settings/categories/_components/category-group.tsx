@@ -4,14 +4,16 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import CategoryItem from "./category-item";
-import { House } from "lucide-react";
+import { House, Plus } from "lucide-react";
 import { Category, TransactionType } from "@/lib/generated/prisma/client";
-
-const transactionTypeTitle: Record<TransactionType, string> = {
-  EXPENSE: "Utgifter",
-  INCOME: "Inkomster",
-  SAVING: "Sparande",
-};
+import { Button } from "@/components/ui/button";
+import {
+  transactionTypeTitlePlural,
+  transactionTypeTitleSingular,
+} from "@/lib/constants";
+import AddCategoryForm from "./add-form";
+import Drawer from "@/components/drawer";
+import { useState } from "react";
 
 type CategoryGroupProps = {
   type: TransactionType;
@@ -26,21 +28,45 @@ export default function CategoryGroup({
     (category) => category.type === type
   );
 
+  const [addDrawerOpen, setAddDrawerOpen] = useState(false);
+
   return (
-    <AccordionItem value={type}>
-      <AccordionTrigger className="cursor-pointer">
-        {transactionTypeTitle[type]}
-      </AccordionTrigger>
-      <AccordionContent>
-        {filteredCategories.map((category) => (
-          <CategoryItem
-            icon={<House />}
-            name={category.name}
-            id={category.id}
-            key={category.id}
-          />
-        ))}
-      </AccordionContent>
-    </AccordionItem>
+    <>
+      <AccordionItem value={type} key={filteredCategories.length}>
+        <AccordionTrigger className="cursor-pointer">
+          {transactionTypeTitlePlural[type]}
+        </AccordionTrigger>
+        <AccordionContent>
+          {filteredCategories.map((category) => (
+            <CategoryItem
+              icon={<House />}
+              name={category.name}
+              id={category.id}
+              key={category.id}
+            />
+          ))}
+
+          <Button
+            variant="ghost"
+            className="w-full cursor-pointer"
+            onClick={() => {
+              setAddDrawerOpen(true);
+            }}
+          >
+            <Plus /> Lägg till{" "}
+            {transactionTypeTitleSingular[type].toLowerCase()}
+          </Button>
+        </AccordionContent>
+      </AccordionItem>
+
+      <Drawer
+        open={addDrawerOpen}
+        onOpenChange={setAddDrawerOpen}
+        title="Ny kategori"
+        description="Lägg till ny kategori"
+      >
+        <AddCategoryForm onOpenChange={setAddDrawerOpen} categoryType={type} />
+      </Drawer>
+    </>
   );
 }

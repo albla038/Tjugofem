@@ -1,6 +1,9 @@
 import prisma from "@/lib/db";
 import { TransactionType } from "@/lib/generated/prisma/enums";
+import { CategoryCreate } from "@/schemas/category";
 import { User } from "better-auth";
+import { requireUser } from "../user/verify-user";
+import { MutationResult } from "@/types/results";
 
 const defaultCategories: { name: string; type: TransactionType }[] = [
   {
@@ -25,7 +28,7 @@ const defaultCategories: { name: string; type: TransactionType }[] = [
   },
   {
     name: "Övrig utgift",
-    type: "EXPENSE"
+    type: "EXPENSE",
   },
   {
     name: "Fondsparande",
@@ -64,5 +67,25 @@ export async function createDefaultCategories(user: User) {
         cause: error instanceof Error ? error : new Error(String(error)),
       }
     );
+  }
+}
+
+export async function createCategory(
+  data: CategoryCreate
+): Promise<MutationResult> {
+  const user = await requireUser();
+
+  try {
+    await prisma.category.create({
+      data: {
+        ...data,
+        userId: user.id,
+      },
+    });
+
+    return { ok: true, data: undefined };
+  } catch (error) {
+    console.log(error);
+    return { ok: false, errorCode: "INTERNAL_ERROR" };
   }
 }
