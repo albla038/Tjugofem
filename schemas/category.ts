@@ -12,4 +12,9 @@ export const categoryCreateSchema = z.object({
   type: z.enum(TransactionType),
 });
 
+export const categoryUpdateSchema = categoryCreateSchema.extend({
+  id: z.cuid2(),
+});
+
 export type CategoryCreate = z.infer<typeof categoryCreateSchema>;
+export type CategoryUpdate = z.infer<typeof categoryUpdateSchema>;
