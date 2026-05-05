@@ -1,5 +1,6 @@
 "use client";
 
+import CategoryIcon from "@/components/category-icon";
 import {
   Item,
   ItemActions,
@@ -8,23 +9,24 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import { EllipsisIcon } from "lucide-react";
-import { ReactNode } from "react";
 
 type CategoryItemProps = {
   name: string;
-  icon: ReactNode;
+  icon: string | null;
   id: string;
 };
 
-export default function CategoryItem({ name, icon, id }: CategoryItemProps) {
+export default function CategoryItem(item: CategoryItemProps) {
   return (
     <Item
-      onClick={() => alert(`Clicked item ${name} in category list`)}
+      onClick={() => alert(`Clicked item ${item.name} in category list`)}
       className="cursor-pointer"
     >
-      <ItemMedia variant="icon">{icon}</ItemMedia>
+      <ItemMedia>
+        <CategoryIcon category={item} />
+      </ItemMedia>
       <ItemContent>
-        <ItemTitle>{name}</ItemTitle>
+        <ItemTitle>{item.name}</ItemTitle>
       </ItemContent>
       <ItemActions>
         <EllipsisIcon className="size-4" />

@@ -39,7 +39,7 @@ export default function CategoryGroup({
         <AccordionContent>
           {filteredCategories.map((category) => (
             <CategoryItem
-              icon={<House />}
+              icon={category.icon}
               name={category.name}
               id={category.id}
               key={category.id}
