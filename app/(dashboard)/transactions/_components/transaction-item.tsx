@@ -79,7 +79,7 @@ export default function TransactionItem({
 
       <Drawer
         title="Redigera transaktion"
-        description="Redigera koperia eller länka transaktion" // TODO: Is all of this implemented?
+        description="Redigera, kopiera eller länka transaktion" // TODO: Is all of this implemented?
         open={isEditing}
         onOpenChange={setIsEditing}
         drawerAction={
