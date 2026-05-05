@@ -4,7 +4,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import CategoryItem from "./category-item";
-import { House, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Category, TransactionType } from "@/lib/generated/prisma/client";
 import { Button } from "@/components/ui/button";
 import {
