@@ -107,6 +107,15 @@ export default function TransactionItem({
                 <CopyPlus /> Duplicera transaktion
               </DropdownMenuItem>
 
+              <DropdownMenuItem
+                onClick={() => {
+                  setIsEditing(false);
+                  onDuplicate({ ...item, date: new Date() });
+                }}
+              >
+                <CopyPlus /> Duplicera transaktion (idag)
+              </DropdownMenuItem>
+
               {/* TODO: Add linking functionality */}
               {/* <DropdownMenuItem>
                 <Link /> Länka transaktion

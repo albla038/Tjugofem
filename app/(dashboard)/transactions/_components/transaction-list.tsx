@@ -65,7 +65,6 @@ export default function TransactionList({
     setDefaultFormValues({
       ...transaction,
       amount: (transaction.amountInCents / 100).toString(),
-      date: new Date(),
     });
     setAddDrawerOpen(true);
   }
