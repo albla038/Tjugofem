@@ -32,11 +32,9 @@ import { Controller, useForm } from "react-hook-form";
 
 type CategoryFormUIProps = {
   defaultValues: CategoryCreate;
+  onOpenChange: (open: boolean) => void;
   onSubmit: (data: CategoryCreate) => void;
   isPending: boolean;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  categoryType: string;
 };
 
 export default function CategoryFormUI({

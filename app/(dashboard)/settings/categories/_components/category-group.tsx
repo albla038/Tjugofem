@@ -32,7 +32,7 @@ export default function CategoryGroup({
 
   return (
     <>
-      <AccordionItem value={type}>
+      <AccordionItem value={type} key={filteredCategories.length}>
         <AccordionTrigger className="cursor-pointer">
           {transactionTypeTitlePlural[type]}
         </AccordionTrigger>
@@ -65,11 +65,7 @@ export default function CategoryGroup({
         title="Ny kategori"
         description="Lägg till ny kategori"
       >
-        <AddCategoryForm
-          onOpenChange={setAddDrawerOpen}
-          open={addDrawerOpen}
-          categoryType={type}
-        />
+        <AddCategoryForm onOpenChange={setAddDrawerOpen} categoryType={type} />
       </Drawer>
     </>
   );

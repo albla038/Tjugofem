@@ -10,7 +10,6 @@ import { MUTATION_ERROR_MESSAGE_FALLBACK } from "@/lib/error-message-fallbacks";
 const DEFAULT_COLOR = "#1447e6";
 
 type AddCategoryFormProps = {
-  open: boolean;
   onOpenChange: (open: boolean) => void;
   categoryType: TransactionType;
 };
@@ -27,7 +26,6 @@ function getErrorMessage(errorCode: ActionErrorCode) {
 }
 
 export default function AddCategoryForm({
-  open,
   onOpenChange,
   categoryType,
 }: AddCategoryFormProps) {
@@ -62,9 +60,7 @@ export default function AddCategoryForm({
       defaultValues={defaultValues}
       onSubmit={handleSubmit}
       isPending={isPending}
-      open={open}
       onOpenChange={onOpenChange}
-      categoryType={categoryType}
     />
   );
 }
