@@ -20,47 +20,46 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CATEGORY_ICON_MAP } from "@/lib/category-icon-map";
 import { transactionTypeTitleSingular } from "@/lib/constants";
 import { TransactionType } from "@/lib/generated/prisma/enums";
 import { CategoryCreate, categoryCreateSchema } from "@/schemas/category";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { House, LucideIcon, Palette, Pen } from "lucide-react";
+import { Palette, Pen } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 
-const DEFAULT_COLOR = "#1447e6";
-
-type CategoryAddFormProps = {
-  onClose: () => void;
+type CategoryFormUIProps = {
+  defaultValues: CategoryCreate;
+  onSubmit: (data: CategoryCreate) => void;
+  isPending: boolean;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  categoryType: string;
 };
 
-export default function CategoryAddForm({ onClose }: CategoryAddFormProps) {
+export default function CategoryFormUI({
+  defaultValues,
+  onOpenChange,
+  onSubmit,
+  isPending,
+}: CategoryFormUIProps) {
   const form = useForm({
     resolver: zodResolver(categoryCreateSchema),
-    defaultValues: {
-      name: "",
-      type: "EXPENSE" as const,
-      color: DEFAULT_COLOR,
-      icon: "Home",
-    },
+    defaultValues,
   });
 
-  function onSubmit(data: CategoryCreate) {
-    // Return early if no changes were made
-    if (!form.formState.isDirty) return;
-
-    if (data.color === DEFAULT_COLOR) {
-      data.color = undefined;
-    }
-    console.log(data);
-
-    // Call Server Action
-
-    // Close form
-  }
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="p-4">
+    <form
+      onSubmit={form.handleSubmit((data) => {
+        // Prevent submission if no changes have been made
+        if (!form.formState.isDirty) return;
+
+        onSubmit(data);
+      })}
+      noValidate
+    >
       <FieldGroup>
         <div className="grid gap-2">
           {/* Name */}
@@ -168,10 +167,21 @@ export default function CategoryAddForm({ onClose }: CategoryAddFormProps) {
 
         {/* Action buttons */}
         <Field>
-          <Button type="submit" disabled={!form.formState.isDirty}>
-            Spara
+          <Button type="submit" disabled={isPending || !form.formState.isDirty}>
+            {isPending ? (
+              <>
+                <Spinner /> Sparar...
+              </>
+            ) : (
+              "Spara"
+            )}
           </Button>
-          <Button type="button" variant="outline" onClick={onClose}>
+          <Button
+            type="button"
+            variant="outline"
+            className="cursor-pointer"
+            onClick={() => onOpenChange(false)}
+          >
             Avbryt
           </Button>
         </Field>

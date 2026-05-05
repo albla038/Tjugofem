@@ -11,6 +11,9 @@ import {
   transactionTypeTitlePlural,
   transactionTypeTitleSingular,
 } from "@/lib/constants";
+import AddCategoryForm from "./add-form";
+import Drawer from "@/components/drawer";
+import { useState } from "react";
 
 type CategoryGroupProps = {
   type: TransactionType;
@@ -25,25 +28,49 @@ export default function CategoryGroup({
     (category) => category.type === type
   );
 
-  return (
-    <AccordionItem value={type}>
-      <AccordionTrigger className="cursor-pointer">
-        {transactionTypeTitlePlural[type]}
-      </AccordionTrigger>
-      <AccordionContent>
-        {filteredCategories.map((category) => (
-          <CategoryItem
-            icon={<House />}
-            name={category.name}
-            id={category.id}
-            key={category.id}
-          />
-        ))}
+  const [addDrawerOpen, setAddDrawerOpen] = useState(false);
 
-        <Button variant="ghost" className="w-full">
-          <Plus /> Lägg till {transactionTypeTitleSingular[type].toLowerCase()}
-        </Button>
-      </AccordionContent>
-    </AccordionItem>
+  return (
+    <>
+      <AccordionItem value={type}>
+        <AccordionTrigger className="cursor-pointer">
+          {transactionTypeTitlePlural[type]}
+        </AccordionTrigger>
+        <AccordionContent>
+          {filteredCategories.map((category) => (
+            <CategoryItem
+              icon={<House />}
+              name={category.name}
+              id={category.id}
+              key={category.id}
+            />
+          ))}
+
+          <Button
+            variant="ghost"
+            className="w-full cursor-pointer"
+            onClick={() => {
+              setAddDrawerOpen(true);
+            }}
+          >
+            <Plus /> Lägg till{" "}
+            {transactionTypeTitleSingular[type].toLowerCase()}
+          </Button>
+        </AccordionContent>
+      </AccordionItem>
+
+      <Drawer
+        open={addDrawerOpen}
+        onOpenChange={setAddDrawerOpen}
+        title="Ny kategori"
+        description="Lägg till ny kategori"
+      >
+        <AddCategoryForm
+          onOpenChange={setAddDrawerOpen}
+          open={addDrawerOpen}
+          categoryType={type}
+        />
+      </Drawer>
+    </>
   );
 }
