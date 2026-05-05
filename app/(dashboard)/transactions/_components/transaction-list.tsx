@@ -9,7 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { TransactionWithCategory } from "@/data/transaction/queries";
 import { Category } from "@/lib/generated/prisma/client";
 import { TransactionFormInput } from "@/schemas/transaction";
-import { MoreVertical, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useState } from "react";
 
 function groupTransactionsByMonth(transactions: TransactionWithCategory[]) {
@@ -106,12 +106,6 @@ export default function TransactionList({
         description="Lägg till ny utgift, inkomst eller besparing"
         open={isAddDrawerOpen}
         onOpenChange={setAddDrawerOpen}
-        drawerAction={
-          // TODO: Add dropdownMenu
-          <Button size="icon" variant="ghost" disabled>
-            <MoreVertical />
-          </Button>
-        }
       >
         <TransactionAddForm
           defaultValues={defaultFormValues}

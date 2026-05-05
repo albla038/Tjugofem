@@ -22,7 +22,7 @@ import {
 import { TransactionWithCategory } from "@/data/transaction/queries";
 import { Category } from "@/lib/generated/prisma/client";
 import { cn } from "@/lib/utils";
-import { CopyPlus, Link, MoreVertical, Trash2 } from "lucide-react";
+import { CopyPlus, MoreVertical, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 type TransactionItemProps = {
@@ -107,9 +107,10 @@ export default function TransactionItem({
                 <CopyPlus /> Duplicera transaktion
               </DropdownMenuItem>
 
-              <DropdownMenuItem>
+              {/* TODO: Add linking functionality */}
+              {/* <DropdownMenuItem>
                 <Link /> Länka transaktion
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
             </DropdownMenuContent>
           </DropdownMenu>
         }
