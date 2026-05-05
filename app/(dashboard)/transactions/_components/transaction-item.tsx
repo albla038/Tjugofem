@@ -10,6 +10,7 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import { TransactionWithCategory } from "@/data/transaction/queries";
+import { cn } from "@/lib/utils";
 
 type TransactionItemProps = {
   item: TransactionWithCategory;
@@ -25,7 +26,10 @@ export default function TransactionItem({ item }: TransactionItemProps) {
   const amountString = isExpense ? `-${amount}` : amount;
 
   return (
-    <Item size="sm" onClick={() => alert("Clicked transaction with id: " + item.id)}>
+    <Item
+      size="sm"
+      onClick={() => alert("Clicked transaction with id: " + item.id)}
+    >
       <ItemMedia>
         <CategoryIcon category={item.category} />
       </ItemMedia>
@@ -36,13 +40,14 @@ export default function TransactionItem({ item }: TransactionItemProps) {
         </ItemDescription>
       </ItemContent>
       <ItemActions
-        className={
-          isExpense
-            ? "text-red-400"
-            : item.type === "INCOME"
-              ? "text-green-400"
-              : "text-blue-400"
-        }
+        className={cn(
+          "tabular-nums",
+          item.type === "INCOME"
+            ? "text-green-400"
+            : item.type === "SAVING"
+              ? "text-blue-400"
+              : ""
+        )}
       >
         {amountString}
       </ItemActions>
