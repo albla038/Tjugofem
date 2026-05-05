@@ -12,7 +12,7 @@ export default function TransactionGroup({
 }: TransactionGroupProps) {
   return (
     <div>
-      <div className="sticky top-0 z-10 border-b border-border bg-background px-4 pt-1 pb-0.5 text-sm text-muted-foreground">
+      <div className="sticky top-0 z-1 border-b border-border bg-background px-4 pt-1 pb-0.5 text-sm text-muted-foreground">
         {groupTitle}
       </div>
 
