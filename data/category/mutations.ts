@@ -1,9 +1,10 @@
 import prisma from "@/lib/db";
 import { TransactionType } from "@/lib/generated/prisma/enums";
-import { CategoryCreate } from "@/schemas/category";
+import { CategoryCreate, CategoryUpdate } from "@/schemas/category";
 import { User } from "better-auth";
 import { requireUser } from "../user/verify-user";
 import { MutationResult } from "@/types/results";
+import { Prisma } from "@/lib/generated/prisma/client";
 
 const defaultCategories: { name: string; type: TransactionType }[] = [
   {
@@ -86,6 +87,37 @@ export async function createCategory(
     return { ok: true, data: undefined };
   } catch (error) {
     console.log(error);
+    return { ok: false, errorCode: "INTERNAL_ERROR" };
+  }
+}
+
+export async function updateCategory(
+  data: CategoryUpdate
+): Promise<MutationResult> {
+  const user = await requireUser();
+
+  const { id, ...newData } = data;
+
+  try {
+    await prisma.category.update({
+      where: {
+        id: id,
+        userId: user.id,
+      },
+
+      data: newData,
+    });
+    return { ok: true, data: undefined };
+  } catch (error) {
+    console.error(error);
+
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
+      return { ok: false, errorCode: "NOT_FOUND" };
+    }
+
     return { ok: false, errorCode: "INTERNAL_ERROR" };
   }
 }

@@ -38,12 +38,7 @@ export default function CategoryGroup({
         </AccordionTrigger>
         <AccordionContent>
           {filteredCategories.map((category) => (
-            <CategoryItem
-              icon={category.icon}
-              name={category.name}
-              id={category.id}
-              key={category.id}
-            />
+            <CategoryItem key={category.id} item={category} />
           ))}
 
           <Button
