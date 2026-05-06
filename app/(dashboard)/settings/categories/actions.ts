@@ -94,7 +94,7 @@ export async function deleteCategoryAction(
   }
 
   // Validate cache
-  revalidatePath("/");
+  revalidatePath("/", "layout");
 
   return { success: true, data: undefined };
 }
