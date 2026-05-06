@@ -10,7 +10,9 @@ import CategoryFormUI from "./form-ui";
 function getErrorMessage(errorCode: ActionErrorCode) {
   switch (errorCode) {
     case "UNAUTHORIZED":
-      return "Du måste vara inloggad för att skapa en kategori";
+      return "Du måste vara inloggad för att redigera en kategori";
+    case "NOT_FOUND":
+      return "Vi kunde inte hitta kategorin du försöker redigera. Den kanske har tagits bort.";
     case "VALIDATION_FAILED":
       return "Något gick fel med de angivna uppgifterna. Kontrollera och försök igen.";
     default:

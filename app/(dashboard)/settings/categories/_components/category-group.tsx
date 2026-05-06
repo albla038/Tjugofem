@@ -37,8 +37,8 @@ export default function CategoryGroup({
           {transactionTypeTitlePlural[type]}
         </AccordionTrigger>
         <AccordionContent>
-          {filteredCategories.map((category, key) => (
-            <CategoryItem key={key} item={category} />
+          {filteredCategories.map((category) => (
+            <CategoryItem key={category.id} item={category} />
           ))}
 
           <Button
