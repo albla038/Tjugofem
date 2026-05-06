@@ -10,6 +10,7 @@ const transactionWithCategoryInclude = {
       id: true,
       name: true,
       icon: true,
+      color: true,
     },
   },
 } satisfies Prisma.TransactionInclude;

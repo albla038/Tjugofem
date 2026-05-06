@@ -6,9 +6,8 @@ export const categoryCreateSchema = z.object({
   name: z.string().min(1, "Kategorin måste ha ett namn"),
   icon: z
     .string()
-    .refine((val) => val in CATEGORY_ICON_MAP, { error: "Ogiltig ikon" })
-    .optional(),
-  color: z.string().optional(),
+    .refine((val) => val in CATEGORY_ICON_MAP, { error: "Ogiltig ikon" }),
+  color: z.string().regex(/^#[0-9a-f]{6}$/i),
   type: z.enum(TransactionType),
 });
 

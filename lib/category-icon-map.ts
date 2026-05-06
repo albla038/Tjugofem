@@ -1,8 +1,9 @@
 import {
   Activity,
   Banknote,
-  BookOpen,
+  BookOpenText,
   Bus,
+  CalendarSync,
   Car,
   Coffee,
   Coins,
@@ -12,10 +13,13 @@ import {
   Film,
   Gift,
   GraduationCap,
+  HandCoins,
   Home,
   Music,
   PawPrint,
+  PiggyBank,
   Plane,
+  ShieldCheck,
   Shirt,
   ShoppingBag,
   ShoppingCart,
@@ -39,6 +43,8 @@ export const CATEGORY_ICON_MAP: Record<string, LucideIcon> = {
   Zap, // Electricity
   Droplets, // Water
   Wifi, // Internet
+  ShieldCheck, // Insurance
+  CalendarSync, // Subscriptions (e.g., Netflix, Spotify)
 
   // Transportation
   Car, // Gas/Car Maintenance
@@ -58,7 +64,7 @@ export const CATEGORY_ICON_MAP: Record<string, LucideIcon> = {
   // Entertainment & Education
   Film, // Movies/Subscriptions
   Music, // Music
-  BookOpen, // Books
+  BookOpenText, // Books
   GraduationCap, // Education/Student Loans
 
   // Miscellaneous
@@ -67,5 +73,7 @@ export const CATEGORY_ICON_MAP: Record<string, LucideIcon> = {
   // Finance & Income
   Banknote, // Salary
   Coins, // Savings
+  PiggyBank, // Investments
   Wallet, // General/Cash
+  HandCoins
 };

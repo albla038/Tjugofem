@@ -31,13 +31,6 @@ export default function CategoryEditForm({
 }: CategoryEditFormProps) {
   const [isPending, startTransition] = useTransition();
 
-  const initialData = {
-    name: category.name,
-    type: category.type,
-    icon: category.icon ? category.icon : undefined,
-    // color: undefined,
-  };
-
   function handleSubmit(data: CategoryCreate) {
     const newData: CategoryUpdate = {
       ...data,
@@ -59,7 +52,7 @@ export default function CategoryEditForm({
 
   return (
     <CategoryFormUI
-      defaultValues={initialData}
+      defaultValues={category}
       onSubmit={handleSubmit}
       isPending={isPending}
       onOpenChange={onOpenChange}

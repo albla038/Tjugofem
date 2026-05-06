@@ -7,8 +7,6 @@ import { toast } from "sonner";
 import { ActionErrorCode } from "@/types/error-codes";
 import { MUTATION_ERROR_MESSAGE_FALLBACK } from "@/lib/error-message-fallbacks";
 
-const DEFAULT_COLOR = "#1447e6";
-
 type AddCategoryFormProps = {
   onOpenChange: (open: boolean) => void;
   categoryType: TransactionType;
@@ -32,17 +30,13 @@ export default function AddCategoryForm({
   const defaultValues = {
     name: "",
     type: categoryType,
-    color: DEFAULT_COLOR,
+    color: "#FFFFFF",
     icon: "Home",
   };
 
   const [isPending, startTransition] = useTransition();
 
   function handleSubmit(data: CategoryCreate) {
-    if (data.color === DEFAULT_COLOR) {
-      data.color = undefined;
-    }
-
     startTransition(async () => {
       const response = await createCategoryAction(data);
 
