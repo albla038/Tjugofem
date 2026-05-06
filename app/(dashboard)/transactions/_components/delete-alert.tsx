@@ -22,7 +22,7 @@ import { toast } from "sonner";
 function getErrorMessage(errorCode: ActionErrorCode) {
   switch (errorCode) {
     case "NOT_FOUND":
-      return "Vi kunde inte hitta transaktionen du försöker radera. Den kanske har redan tagits bort.";
+      return "Vi kunde inte hitta transaktionen du försöker radera. Den kanske redan har tagits bort.";
     case "VALIDATION_FAILED":
       return "Något gick fel med de angivna uppgifterna. Kontrollera och försök igen.";
     default:
