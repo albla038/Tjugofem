@@ -1,6 +1,5 @@
 "use client";
 
-import { deleteTransactionAction } from "@/app/(dashboard)/transactions/actions";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,16 +12,24 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Spinner } from "@/components/ui/spinner";
-import { MUTATION_ERROR_MESSAGE_FALLBACK } from "@/lib/error-message-fallbacks";
-import { ActionErrorCode } from "@/types/error-codes";
 import { Trash2 } from "lucide-react";
 import { useTransition } from "react";
+import { deleteCategoryAction } from "../actions";
 import { toast } from "sonner";
+import { ActionErrorCode } from "@/types/error-codes";
+import { MUTATION_ERROR_MESSAGE_FALLBACK } from "@/lib/error-message-fallbacks";
+
+type CategoryDeleteProps = {
+  open: boolean;
+  onOpenChange: (value: boolean) => void;
+  categoryId: string;
+  categoryName: string;
+};
 
 function getErrorMessage(errorCode: ActionErrorCode) {
   switch (errorCode) {
     case "NOT_FOUND":
-      return "Vi kunde inte hitta transaktionen du försöker radera. Den kanske redan har tagits bort.";
+      return "Vi kunde inte hitta kategorin du försöker radera. Den kanske redan har tagits bort.";
     case "VALIDATION_FAILED":
       return "Något gick fel med de angivna uppgifterna. Kontrollera och försök igen.";
     default:
@@ -30,29 +37,25 @@ function getErrorMessage(errorCode: ActionErrorCode) {
   }
 }
 
-type TransactionDeleteAlertProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  transactionId: string;
-};
-
-export default function TransactionDeleteAlert({
+export default function CategoryDeleteAlert({
   open,
   onOpenChange,
-  transactionId,
-}: TransactionDeleteAlertProps) {
+  categoryId,
+  categoryName,
+}: CategoryDeleteProps) {
   const [isPending, startTransition] = useTransition();
 
   function handleDelete() {
     startTransition(async () => {
-      const response = await deleteTransactionAction(transactionId);
+      const response = await deleteCategoryAction(categoryId);
 
+      // Return early if unsuccessful
       if (!response.success) {
         toast.error(getErrorMessage(response.errorCode));
         return;
       }
 
-      toast.success("Transaktionen raderades");
+      toast.success("Kategorin raderades");
       onOpenChange(false);
     });
   }
@@ -64,9 +67,9 @@ export default function TransactionDeleteAlert({
           <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
             <Trash2 />
           </AlertDialogMedia>
-          <AlertDialogTitle>Ta bort transaktion?</AlertDialogTitle>
+          <AlertDialogTitle>Ta bort kategori?</AlertDialogTitle>
           <AlertDialogDescription>
-            Transaktionen tas bort permanent och kan inte återställas
+            {categoryName} tas bort permanent och kan inte återställas
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

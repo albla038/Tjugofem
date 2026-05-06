@@ -121,3 +121,27 @@ export async function updateCategory(
     return { ok: false, errorCode: "INTERNAL_ERROR" };
   }
 }
+
+export async function deleteCategory(id: string): Promise<MutationResult> {
+  const user = await requireUser();
+
+  try {
+    await prisma.category.delete({
+      where: {
+        id,
+        userId: user.id,
+      },
+    });
+    return { ok: true, data: undefined };
+  } catch (error) {
+    console.error(error);
+
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
+      return { ok: false, errorCode: "NOT_FOUND" };
+    }
+    return { ok: false, errorCode: "INTERNAL_ERROR" };
+  }
+}
