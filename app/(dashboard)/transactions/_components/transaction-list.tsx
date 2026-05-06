@@ -109,7 +109,10 @@ export default function TransactionList({
         <TransactionAddForm
           defaultValues={defaultFormValues}
           categories={categories}
-          onClose={() => setAddDrawerOpen(false)}
+          onClose={() => {
+            setDefaultFormValues(INITAL_FORM_VALUES);
+            setAddDrawerOpen(false);
+          }}
         />
       </Drawer>
     </>

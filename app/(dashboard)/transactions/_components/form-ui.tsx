@@ -45,7 +45,7 @@ import { Controller, useForm } from "react-hook-form";
 
 type TransactionFormUIProps = {
   defaultValues: TransactionFormInput;
-  onSubmit: (data: TransactionForm, resetForm: () => void) => void;
+  onSubmit: (data: TransactionForm) => void;
   isPending: boolean;
   categories: Category[];
   onClose: () => void;
@@ -69,7 +69,7 @@ export default function TransactionFormUI({
         // Prevent submission if no changes have been made
         if (!form.formState.isDirty) return;
 
-        onSubmit(data, form.reset);
+        onSubmit(data);
       })}
       noValidate
     >

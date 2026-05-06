@@ -38,7 +38,7 @@ export default function TransactionAddForm({
 }: TransactionAddFormProps) {
   const [isPending, startTransition] = useTransition();
 
-  function handleSubmit(data: TransactionForm, resetForm: () => void) {
+  function handleSubmit(data: TransactionForm) {
     const transformedData: TransactionCreate = {
       ...data,
       amountInCents: Math.round(data.amount * 100),
@@ -52,8 +52,8 @@ export default function TransactionAddForm({
         return;
       }
 
-      resetForm();
       toast.success(`${transactionTypeTitleSingular[data.type]} tillagd!`);
+      onClose();
     });
   }
 
