@@ -32,8 +32,8 @@ function getContrastColor(hexColor: string) {
 type CategoryIconProps = {
   category: {
     name: string;
-    icon: string | null;
-    color?: string | null; // TODO: Remove optional when backend supports colors for categories
+    icon?: string;
+    color?: string;
   };
   className?: string;
 };
