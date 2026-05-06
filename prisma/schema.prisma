@@ -26,7 +26,7 @@ model Transaction {
 
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId String
-  user       User     @relation(fields: [userId], references: [id])
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String
 
   createdAt DateTime @default(now())
@@ -36,10 +36,11 @@ model Transaction {
 }
 
 model Category {
-  id   String          @id @default(cuid(2))
-  name String
-  icon String?
-  type TransactionType
+  id    String          @id @default(cuid(2))
+  name  String
+  icon  String?
+  color String?
+  type  TransactionType
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String

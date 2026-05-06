@@ -1,55 +1,117 @@
 import prisma from "@/lib/db";
-import { TransactionType } from "@/lib/generated/prisma/enums";
 import { CategoryCreate, CategoryUpdate } from "@/schemas/category";
 import { User } from "better-auth";
 import { requireUser } from "../user/verify-user";
 import { MutationResult } from "@/types/results";
 import { Prisma } from "@/lib/generated/prisma/client";
 
-const defaultCategories: { name: string; type: TransactionType }[] = [
+const defaultCategories: Omit<Prisma.CategoryCreateManyInput, "userId">[] = [
+  // Expenses
   {
     name: "Mat & hushåll",
     type: "EXPENSE",
+    color: "#86efac", // Green
+    icon: "ShoppingCart",
   },
   {
     name: "Hyra",
     type: "EXPENSE",
+    color: "#fcd34d", // Yellow
+    icon: "Home",
   },
   {
-    name: "Försäkring",
+    name: "Bolån",
     type: "EXPENSE",
+    color: "#fcd34d", // Yellow
+    icon: "Home",
   },
   {
-    name: "Bil & transport",
+    name: "El, vatten & energi",
     type: "EXPENSE",
+    color: "#fcd34d", // Yellow
+    icon: "Zap",
   },
   {
     name: "Telefoni",
     type: "EXPENSE",
+    color: "#fcd34d", // Yellow
+    icon: "Wifi",
   },
   {
-    name: "Övrig utgift",
+    name: "Bil & transport",
     type: "EXPENSE",
+    color: "#c4cfc8", // Olive
+    icon: "Car",
   },
   {
-    name: "Fondsparande",
-    type: "SAVING",
+    name: "Försäkring",
+    type: "EXPENSE",
+    color: "#5eead4", // Teal
+    icon: "ShieldCheck",
   },
   {
-    name: "Buffertsparande",
-    type: "SAVING",
+    name: "Nöjen",
+    type: "EXPENSE",
+    color: "#d8b4fe", // Purple
+    icon: "Gift",
   },
+  {
+    name: "Resor",
+    type: "EXPENSE",
+    color: "#d8b4fe", // Purple
+    icon: "Plane",
+  },
+  {
+    name: "Kläder & shopping",
+    type: "EXPENSE",
+    color: "#fca5a5", // Red
+    icon: "ShoppingBag",
+  },
+  {
+    name: "Abonnemang & prenumerationer",
+    type: "EXPENSE",
+    color: "#c4b5fd", // Violet
+    icon: "CalendarSync",
+  },
+  {
+    name: "Hälsa & träning",
+    type: "EXPENSE",
+    color: "#f9a8d4", // Pink
+    icon: "Activity",
+  },
+  {
+    name: "Kurslitteratur",
+    type: "EXPENSE",
+    color: "#bef264", // Lime
+    icon: "BookOpenText",
+  },
+
+  // Savings
+  {
+    name: "Sparande",
+    type: "SAVING",
+    color: "#7dd3fc", // Sky Blue
+    icon: "PiggyBank",
+  },
+  {
+    name: "Investeringar",
+    type: "SAVING",
+    color: "#a5b4fc", // Indigo
+    icon: "Banknote",
+  },
+
+  // Income
   {
     name: "Lön",
     type: "INCOME",
+    color: "#6ee7b7", // Emerald
+    icon: "Coins",
   },
   {
     name: "CSN",
     type: "INCOME",
-  },
-  {
-    name: "Övrig inkomst",
-    type: "INCOME",
+    color: "#6ee7b7", // Emerald
+    icon: "GraduationCap",
   },
 ];
 
