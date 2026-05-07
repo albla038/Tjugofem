@@ -40,8 +40,8 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
-import { CalendarIcon, CircleDashed, Coins, Pen } from "lucide-react";
-import { Controller, useForm } from "react-hook-form";
+import { CalendarIcon, Coins, Pen } from "lucide-react";
+import { Controller, useForm, useWatch } from "react-hook-form";
 
 type TransactionFormUIProps = {
   defaultValues: TransactionFormInput;
@@ -62,6 +62,15 @@ export default function TransactionFormUI({
     resolver: zodResolver(transactionFormSchema),
     defaultValues,
   });
+
+  const selectedType = useWatch({
+    control: form.control,
+    name: "type",
+  });
+
+  const filteredCategories = categories.filter(
+    (category) => category.type === selectedType
+  );
 
   return (
     <form
@@ -112,7 +121,13 @@ export default function TransactionFormUI({
             name={"type"}
             render={({ field }) => (
               <Field>
-                <Tabs {...field} onValueChange={field.onChange}>
+                <Tabs
+                  {...field}
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    form.setValue("categoryId", ""); // Reset category when type changes
+                  }}
+                >
                   <TabsList>
                     {Object.keys(TransactionType).map((key) => (
                       <TabsTrigger value={key} key={key}>
@@ -196,12 +211,11 @@ export default function TransactionFormUI({
                     <SelectValue placeholder="Välj kategori..." />
                   </SelectTrigger>
                   <SelectContent>
-                    {categories.map((category) => {
-                      const Icon =
-                        category.icon && CATEGORY_ICON_MAP[category.icon];
+                    {filteredCategories.map((category) => {
+                      const Icon = CATEGORY_ICON_MAP[category.icon];
                       return (
                         <SelectItem value={category.id} key={category.id}>
-                          {Icon ? <Icon /> : <CircleDashed />}
+                          <Icon />
                           {category.name}
                         </SelectItem>
                       );
