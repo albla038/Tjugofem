@@ -3,31 +3,30 @@
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
+import { redirect } from "next/navigation";
 import { useTransition } from "react";
 
-export default function LoginButton() {
+export default function LogoutButton() {
   const [isPending, startTransition] = useTransition();
 
-  function loginWithGoogle() {
+  function logOut() {
     startTransition(async () => {
-      await authClient.signIn.social({
-        provider: "google",
-        callbackURL: "/transactions",
-        // TODO: Implement
-        // errorCallbackURL
-        // newUserCallbackURL
+      await authClient.signOut({
+        fetchOptions: {
+          onSuccess: () => redirect("/login"),
+        },
       });
     });
   }
 
   return (
-    <Button onClick={loginWithGoogle} className="w-full" disabled={isPending}>
+    <Button onClick={logOut} disabled={isPending}>
       {isPending ? (
         <>
-          <Spinner /> Loggar in...
+          <Spinner /> Loggar ut...
         </>
       ) : (
-        "Logga in"
+        "Logga ut"
       )}
     </Button>
   );

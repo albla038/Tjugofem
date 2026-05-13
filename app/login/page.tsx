@@ -13,12 +13,12 @@ export default async function LoginPage() {
   const user = await verifyUser();
 
   if (user) {
-    redirect("/dashboard");
+    redirect("/transactions");
   }
 
   return (
-    <main className="flex h-svh items-center justify-center">
-      <Card className="w-sm">
+    <main className="flex h-svh items-center justify-center p-4">
+      <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">
             Välkommen tillbaka
