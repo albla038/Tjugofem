@@ -14,12 +14,22 @@ export async function createBudget(
 ): Promise<MutationResult> {
   const user = await requireUser();
 
+  const { copyPrevMonth, ...budgetData } = data;
+
   // Fetch category IDs to create budget items for,
   // either from previous month or as new with 0 limits
   let budgetItemsToCreate: BudgetItemCreateManyBudgetInput[] = [];
-  if (data.copyPrevMonth) {
+  if (copyPrevMonth) {
+    // Calculate the previous month and year properly
+    let prevMonthIndex = data.monthIndex - 1;
+    let prevYear = data.year;
+    if (prevMonthIndex < 0) {
+      prevMonthIndex = 11;
+      prevYear -= 1;
+    }
+
     const queryRes = await safeQuery(() =>
-      fetchBudgetWithItems(data.year, data.monthIndex)
+      fetchBudgetWithItems(prevYear, prevMonthIndex)
     );
 
     // Return early if the query failed
@@ -49,7 +59,7 @@ export async function createBudget(
   try {
     await prisma.budget.create({
       data: {
-        ...data,
+        ...budgetData,
         userId: user.id,
 
         budgetItems: {
@@ -62,6 +72,9 @@ export async function createBudget(
 
     return { ok: true, data: undefined };
   } catch {
+    console.error(
+      `Failed to create new budget for user ${user.id} and month ${data.monthIndex + 1}/${data.year}`
+    );
     return { ok: false, errorCode: "INTERNAL_ERROR" };
   }
 }
