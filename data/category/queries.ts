@@ -20,3 +20,20 @@ export async function fetchAllCategories(): Promise<Category[]> {
     });
   }
 }
+
+export async function fetchAllCategoryIds(): Promise<string[]> {
+  const user = await requireUser();
+
+  try {
+    const categories = await prisma.category.findMany({
+      where: { userId: user.id },
+      select: { id: true },
+    });
+
+    return categories.map((cat) => cat.id);
+  } catch (error) {
+    throw new Error(`Failed to fetch category ID:s for user ID: ${user.id}`, {
+      cause: error instanceof Error ? error : new Error(String(error)),
+    });
+  }
+}

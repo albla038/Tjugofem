@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const budgetCreateSchema = z.object({
+export const budgetFormSchema = z.object({
   openingBalance: z
     .string()
     .min(1, "Ange ett belopp")
@@ -21,4 +21,13 @@ export const budgetCreateSchema = z.object({
     .pipe(z.number().int().positive("Ange ett positivt heltal som startdag")),
 });
 
+export const budgetCreateSchema = z.object({
+  year: z.number().int().positive(),
+  monthIndex: z.number().int().positive(),
+  openingBalanceInCents: z.number().int().positive(),
+  startDay: z.number().int().positive(),
+  copyPrevMonth: z.boolean().default(false),
+});
+
+export type BudgetCreateForm = z.infer<typeof budgetFormSchema>;
 export type BudgetCreate = z.infer<typeof budgetCreateSchema>;
