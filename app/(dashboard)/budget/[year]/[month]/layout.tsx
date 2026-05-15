@@ -1,15 +1,11 @@
+import { paramsSchema } from "@/app/(dashboard)/budget/[year]/[month]/schemas";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import z from "zod";
 
-const paramsSchema = z.object({
-  year: z.coerce.number(),
-  month: z.coerce.number(),
-});
 
 export default async function BudgetLayout({
   children,
@@ -39,7 +35,7 @@ export default async function BudgetLayout({
   });
 
   return (
-    <div>
+    <div className="flex h-svh flex-col">
       <div className="flex justify-center">
         <div className="flex items-center">
           <Button asChild variant="ghost" size="icon-lg">
