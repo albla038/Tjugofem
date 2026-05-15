@@ -1,6 +1,7 @@
 "use client";
 
 import StartDateInfoPopover from "@/app/(dashboard)/budget/[year]/[month]/_components/start-date-info-popover";
+import { createBudgetAction } from "@/app/(dashboard)/budget/[year]/[month]/action";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -25,24 +26,42 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
-import { BudgetCreate, budgetCreateSchema } from "@/schemas/budget";
+import { MUTATION_ERROR_MESSAGE_FALLBACK } from "@/lib/error-message-fallbacks";
+import { BudgetCreateForm, budgetFormSchema } from "@/schemas/budget";
+import { ActionErrorCode } from "@/types/error-codes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format, subDays } from "date-fns";
 import { sv } from "date-fns/locale";
 import { useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
+
+function getErrorMessage(errorCode: ActionErrorCode) {
+  switch (errorCode) {
+    case "UNAUTHORIZED":
+      return "Du måste vara inloggad för att skapa en budget.";
+    case "VALIDATION_FAILED":
+      return "Något gick fel med de angivna uppgifterna. Kontrollera och försök igen.";
+    case "NOT_FOUND":
+      return "Det gick inte att hitta föregående månads budget att kopiera. Den kanske har tagits bort?";
+    default:
+      return MUTATION_ERROR_MESSAGE_FALLBACK;
+  }
+}
 
 const DAYS_BEFORE_FIRST = 11;
 
 type NewBudgetFormProps = {
   currentMonthDate: Date;
   onClose: () => void;
+  copyPrevMonth: boolean;
   prevMonthResultCents?: number;
 };
 
 export default function NewBudgetForm({
   currentMonthDate,
   onClose,
+  copyPrevMonth,
   prevMonthResultCents,
 }: NewBudgetFormProps) {
   const prevMonthResult = prevMonthResultCents
@@ -50,7 +69,7 @@ export default function NewBudgetForm({
     : undefined;
 
   const form = useForm({
-    resolver: zodResolver(budgetCreateSchema),
+    resolver: zodResolver(budgetFormSchema),
     defaultValues: {
       openingBalance: prevMonthResult?.toString() ?? "0",
       startDay: "25",
@@ -59,15 +78,26 @@ export default function NewBudgetForm({
 
   const [isPending, startTransition] = useTransition();
 
-  function handleSubmit(data: BudgetCreate) {
+  function handleSubmit(data: BudgetCreateForm) {
     const transformedData = {
       startDay: data.startDay,
       openingBalanceInCents: Math.round(data.openingBalance * 100),
     };
 
     startTransition(async () => {
-      console.log("Form submitted!");
-      console.log(transformedData);
+      const response = await createBudgetAction({
+        ...transformedData,
+        year: currentMonthDate.getFullYear(),
+        monthIndex: currentMonthDate.getMonth(),
+        copyPrevMonth,
+      });
+
+      if (!response.success) {
+        toast.error(getErrorMessage(response.errorCode));
+        return;
+      }
+
+      toast.success("Budget skapad");
       onClose();
     });
   }
