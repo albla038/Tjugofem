@@ -71,9 +71,10 @@ export async function createBudget(
     });
 
     return { ok: true, data: undefined };
-  } catch {
+  } catch (error) {
     console.error(
-      `Failed to create new budget for user ${user.id} and month ${data.monthIndex + 1}/${data.year}`
+      `Failed to create new budget for user ${user.id} and month ${data.monthIndex + 1}/${data.year}`,
+      error
     );
     return { ok: false, errorCode: "INTERNAL_ERROR" };
   }
