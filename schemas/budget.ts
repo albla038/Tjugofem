@@ -1,14 +1,6 @@
 import z from "zod";
 
 export const budgetFormSchema = z.object({
-  openingBalance: z
-    .string()
-    .min(1, "Ange ett belopp")
-    .transform((val) => {
-      const parsed = Number(val);
-      if (isNaN(parsed)) return 0;
-      return parsed;
-    }),
   startDay: z
     .string()
     .min(1, "Ange ett startdatum")
@@ -23,7 +15,6 @@ export const budgetFormSchema = z.object({
 export const budgetCreateSchema = z.object({
   year: z.number().int().positive(),
   monthIndex: z.number().int().positive(),
-  openingBalanceInCents: z.number().int(),
   startDay: z.number().int().positive(),
   copyPrevMonth: z.boolean().default(false),
 });

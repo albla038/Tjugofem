@@ -7,7 +7,10 @@ import { BudgetCreate } from "@/schemas/budget";
 import { MutationResult } from "@/types/results";
 import { fetchAllCategoryIds } from "@/data/category/queries";
 import { safeQuery } from "@/lib/safe-query";
-import { fetchBudgetWithItems } from "@/data/budget/queries";
+import {
+  calculateBudgetClosingBalance,
+  fetchBudgetWithItems,
+} from "@/data/budget/queries";
 
 export async function createBudget(
   data: BudgetCreate
@@ -16,23 +19,34 @@ export async function createBudget(
 
   const { copyPrevMonth, ...budgetData } = data;
 
+  // Calculate the previous month and year properly
+  let prevMonthIndex = data.monthIndex - 1;
+  let prevYear = data.year;
+  if (prevMonthIndex < 0) {
+    prevMonthIndex = 11;
+    prevYear -= 1;
+  }
+
+  // Get the closing balance from the previous month to set as opening balance for the new budget
+  const queryRes = await safeQuery(() =>
+    calculateBudgetClosingBalance(prevYear, prevMonthIndex, data.startDay)
+  );
+
+  // Return early if the query failed
+  if (!queryRes.ok) {
+    return { ok: false, errorCode: "INTERNAL_ERROR" };
+  }
+
+  const prevClosingBalanceInCents = queryRes.data;
+
   // Fetch category IDs to create budget items for,
   // either from previous month or as new with 0 limits
   let budgetItemsToCreate: BudgetItemCreateManyBudgetInput[] = [];
   if (copyPrevMonth) {
-    // Calculate the previous month and year properly
-    let prevMonthIndex = data.monthIndex - 1;
-    let prevYear = data.year;
-    if (prevMonthIndex < 0) {
-      prevMonthIndex = 11;
-      prevYear -= 1;
-    }
-
     const queryRes = await safeQuery(() =>
       fetchBudgetWithItems(prevYear, prevMonthIndex)
     );
 
-    // Return early if the query failed
     if (!queryRes.ok) {
       return { ok: false, errorCode: "INTERNAL_ERROR" };
     }
@@ -59,8 +73,9 @@ export async function createBudget(
   try {
     await prisma.budget.create({
       data: {
-        ...budgetData,
         userId: user.id,
+        ...budgetData,
+        openingBalanceInCents: prevClosingBalanceInCents ?? 0,
 
         budgetItems: {
           createMany: {

@@ -10,14 +10,7 @@ import {
   FieldError,
   FieldGroup,
   FieldLabel,
-  FieldSeparator,
 } from "@/components/ui/field";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-  InputGroupText,
-} from "@/components/ui/input-group";
 import {
   Select,
   SelectContent,
@@ -55,23 +48,16 @@ type NewBudgetFormProps = {
   currentMonthDate: Date;
   onClose: () => void;
   copyPrevMonth: boolean;
-  prevMonthResultCents?: number;
 };
 
 export default function NewBudgetForm({
   currentMonthDate,
   onClose,
   copyPrevMonth,
-  prevMonthResultCents,
 }: NewBudgetFormProps) {
-  const prevMonthResult = prevMonthResultCents
-    ? prevMonthResultCents / 100
-    : undefined;
-
   const form = useForm({
     resolver: zodResolver(budgetFormSchema),
     defaultValues: {
-      openingBalance: prevMonthResult?.toString() ?? "0",
       startDay: "25",
     },
   });
@@ -79,14 +65,9 @@ export default function NewBudgetForm({
   const [isPending, startTransition] = useTransition();
 
   function handleSubmit(data: BudgetCreateForm) {
-    const transformedData = {
-      startDay: data.startDay,
-      openingBalanceInCents: Math.round(data.openingBalance * 100),
-    };
-
     startTransition(async () => {
       const response = await createBudgetAction({
-        ...transformedData,
+        ...data,
         year: currentMonthDate.getFullYear(),
         monthIndex: currentMonthDate.getMonth(),
         copyPrevMonth,
@@ -105,57 +86,6 @@ export default function NewBudgetForm({
   return (
     <form onSubmit={form.handleSubmit(handleSubmit)} noValidate>
       <FieldGroup>
-        {/* Amount */}
-        <Controller
-          control={form.control}
-          name="openingBalance"
-          render={({ field, fieldState }) => (
-            <Field>
-              <FieldContent>
-                <FieldLabel htmlFor={field.name}>Ingående saldo</FieldLabel>
-                <FieldDescription>
-                  <span className="block">Ange ett ingående saldo.</span>
-                  {prevMonthResult && (
-                    <span>
-                      {`Förra månadens resultat: ${prevMonthResult.toLocaleString(
-                        "sv-SE",
-                        {
-                          style: "currency",
-                          currency: "SEK",
-                        }
-                      )}`}
-                    </span>
-                  )}
-                </FieldDescription>
-              </FieldContent>
-
-              <InputGroup>
-                <InputGroupInput
-                  {...field}
-                  id={field.name}
-                  placeholder={
-                    prevMonthResult
-                      ? prevMonthResult.toLocaleString("sv-SE")
-                      : "0"
-                  }
-                  autoComplete="off"
-                  type="number"
-                  step="0.01"
-                  aria-invalid={fieldState.invalid}
-                />
-
-                <InputGroupAddon align="inline-end">
-                  <InputGroupText>SEK</InputGroupText>
-                </InputGroupAddon>
-              </InputGroup>
-
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-
-        <FieldSeparator />
-
         {/* Start day */}
         <Controller
           control={form.control}
@@ -197,6 +127,7 @@ export default function NewBudgetForm({
           )}
         />
 
+        {/* Action buttons */}
         <Field>
           <Button type="submit" disabled={isPending}>
             {isPending ? (

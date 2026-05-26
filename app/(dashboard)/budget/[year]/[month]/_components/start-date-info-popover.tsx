@@ -23,7 +23,7 @@ export default function StartDateInfoPopover() {
           <PopoverTitle>Budgetperiod</PopoverTitle>
           <PopoverDescription>
             Budgeten gäller från startdatumet till och med sista dagen i
-            månaden, eller till nästa budgets startdatum
+            månaden, eller till nästa budgets startdatum. Ett lämpligt startdatum är dagen du får din inkomst.
           </PopoverDescription>
         </PopoverHeader>
       </PopoverContent>
