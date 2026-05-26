@@ -46,6 +46,35 @@ export async function fetchBudgetWithItems(
   }
 }
 
+export async function checkIfBudgetExists(
+  year: number,
+  monthIndex: number
+): Promise<boolean> {
+  const user = await requireUser();
+
+  try {
+    const budget = await prisma.budget.findUnique({
+      where: {
+        year_monthIndex_userId: {
+          userId: user.id,
+          year,
+          monthIndex,
+        },
+      },
+      select: { id: true },
+    });
+
+    return !!budget;
+  } catch (error) {
+    throw new Error(
+      `Failed to fetch budget for ${year}-${monthIndex} for user ID: ${user.id}`,
+      {
+        cause: error instanceof Error ? error : new Error(String(error)),
+      }
+    );
+  }
+}
+
 export async function calculateBudgetClosingBalance({
   year,
   monthIndex,
