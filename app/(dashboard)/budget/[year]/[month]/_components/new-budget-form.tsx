@@ -55,10 +55,19 @@ export default function NewBudgetForm({
   onClose,
   copyPrevMonth,
 }: NewBudgetFormProps) {
+  // Generate the date options
+  const dateOptions = Array.from({ length: DAYS_BEFORE_FIRST }, (_, i) => {
+    const daysToSubtract = DAYS_BEFORE_FIRST - 1 - i;
+    return subDays(currentMonthDate, daysToSubtract);
+  });
+
+  const defaultDate =
+    dateOptions.find((d) => d.getDate() === 25) ?? dateOptions[0];
+
   const form = useForm({
     resolver: zodResolver(budgetFormSchema),
     defaultValues: {
-      startDay: "25",
+      startDate: defaultDate.toISOString(),
     },
   });
 
@@ -86,10 +95,10 @@ export default function NewBudgetForm({
   return (
     <form onSubmit={form.handleSubmit(handleSubmit)} noValidate>
       <FieldGroup>
-        {/* Start day */}
+        {/* Start date */}
         <Controller
           control={form.control}
-          name="startDay"
+          name="startDate"
           render={({ field, fieldState }) => (
             <Field>
               <FieldContent>
@@ -107,14 +116,12 @@ export default function NewBudgetForm({
                   <SelectValue placeholder="Ange startdatum" />
                 </SelectTrigger>
                 <SelectContent>
-                  {Array.from({ length: DAYS_BEFORE_FIRST }, (_, i) => {
-                    const daysToSubtract = DAYS_BEFORE_FIRST - 1 - i;
-                    const date = subDays(currentMonthDate, daysToSubtract);
+                  {dateOptions.map((date) => {
+                    const dayValue = date.toISOString();
                     const dayLabel = format(date, "d MMMM", { locale: sv });
-                    const dayKey = format(date, "d", { locale: sv });
 
                     return (
-                      <SelectItem key={dayKey} value={dayKey}>
+                      <SelectItem key={dayValue} value={dayValue}>
                         {dayLabel}
                       </SelectItem>
                     );

@@ -46,11 +46,15 @@ export async function fetchBudgetWithItems(
   }
 }
 
-export async function calculateBudgetClosingBalance(
-  year: number,
-  monthIndex: number,
-  endDay?: number
-): Promise<number | null> {
+export async function calculateBudgetClosingBalance({
+  year,
+  monthIndex,
+  providedEndDate,
+}: {
+  year: number;
+  monthIndex: number;
+  providedEndDate?: Date;
+}): Promise<number | null> {
   const user = await requireUser();
 
   try {
@@ -63,7 +67,7 @@ export async function calculateBudgetClosingBalance(
           monthIndex,
         },
       },
-      select: { openingBalanceInCents: true, startDay: true },
+      select: { openingBalanceInCents: true, startDate: true },
     });
 
     if (!budget) {
@@ -71,39 +75,24 @@ export async function calculateBudgetClosingBalance(
       return null;
     }
 
-    let prevMonthYear = year;
-    let prevMonthIndex = monthIndex - 1;
+    const startDate = budget.startDate;
+    let endDate: Date;
 
-    // If previous month index is less than 0, roll back to December of the previous year
-    if (prevMonthIndex < 0) {
-      prevMonthYear -= 1;
-      prevMonthIndex = 11;
-    }
+    // If an end date override is provided, use it
+    if (providedEndDate) {
+      endDate = providedEndDate;
 
-    // Calculate the start current budget period
-    let startDate = new Date(prevMonthYear, prevMonthIndex, budget.startDay);
-    if (budget.startDay === 1) {
-      startDate = new Date(year, monthIndex, 1);
-    }
-
-    let nextMonthYear = year;
-    let nextMonthIndex = monthIndex + 1;
-
-    // If next month index exceeds December, roll over to January of the next year
-    if (nextMonthIndex > 11) {
-      nextMonthYear += 1;
-      nextMonthIndex = 0;
-    }
-
-    // Calculate the end of the current budget period
-    let endDate = new Date(nextMonthYear, nextMonthIndex, 1); // Default end date is the first day of the next month
-
-    // If an end day is provided, use it as the end date
-    if (endDay !== undefined) {
-      if (endDay > 1) {
-        endDate = new Date(year, monthIndex, endDay);
-      }
+      // Otherwise, determine the end date based on the next month's budget
+      // or default to the 1st of the next month
     } else {
+      let nextMonthYear = year;
+      let nextMonthIndex = monthIndex + 1;
+      // If next month index exceeds December, roll over to January of the next year
+      if (nextMonthIndex > 11) {
+        nextMonthYear += 1;
+        nextMonthIndex = 0;
+      }
+
       // Get the next month's start day if it exists
       const nextMonthBudget = await prisma.budget.findUnique({
         where: {
@@ -113,15 +102,15 @@ export async function calculateBudgetClosingBalance(
             monthIndex: nextMonthIndex,
           },
         },
+        select: { startDate: true },
       });
 
-      // If the next month budget exists and has a start day, use it as the end date
       if (nextMonthBudget) {
-        if (nextMonthBudget.startDay === 1) {
-          endDate = new Date(nextMonthYear, nextMonthIndex, 1);
-        } else {
-          endDate = new Date(year, monthIndex, nextMonthBudget.startDay);
-        }
+        endDate = nextMonthBudget.startDate;
+      } else {
+        // Next budget doesn't exist, set end date to the 1st of the next month
+        // (to capture everything up to 23:59:59.999 of the last day of the current month)
+        endDate = new Date(nextMonthYear, nextMonthIndex, 1);
       }
     }
 

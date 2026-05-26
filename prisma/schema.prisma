@@ -70,10 +70,10 @@ model BudgetItem {
 }
 
 model Budget {
-  id                    String @id @default(cuid(2))
+  id                    String   @id @default(cuid(2))
   year                  Int
   monthIndex            Int
-  startDay              Int
+  startDate             DateTime
   openingBalanceInCents Int
 
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)

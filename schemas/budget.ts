@@ -1,21 +1,17 @@
 import z from "zod";
 
 export const budgetFormSchema = z.object({
-  startDay: z
+  startDate: z
     .string()
     .min(1, "Ange ett startdatum")
-    .transform((val) => {
-      const parsed = Number(val);
-      if (isNaN(parsed)) return -1; // Force it to fail the positive check if it's not a number
-      return parsed;
-    })
-    .pipe(z.number().int().positive("Ange ett positivt heltal som startdag")),
+    .transform((val) => new Date(val))
+    .pipe(z.date("Ange ett giltigt startdatum")),
 });
 
 export const budgetCreateSchema = z.object({
   year: z.number().int().positive(),
   monthIndex: z.number().int().positive(),
-  startDay: z.number().int().positive(),
+  startDate: z.date(),
   copyPrevMonth: z.boolean().default(false),
 });
 

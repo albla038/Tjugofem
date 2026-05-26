@@ -29,7 +29,11 @@ export async function createBudget(
 
   // Get the closing balance from the previous month to set as opening balance for the new budget
   const queryRes = await safeQuery(() =>
-    calculateBudgetClosingBalance(prevYear, prevMonthIndex, data.startDay)
+    calculateBudgetClosingBalance({
+      year: prevYear,
+      monthIndex: prevMonthIndex,
+      providedEndDate: data.startDate,
+    })
   );
 
   // Return early if the query failed
