@@ -71,46 +71,58 @@ export async function calculateBudgetClosingBalance(
       return null;
     }
 
-    // Calculate the start and end dates for the current budget period
-    let startDate = new Date(year, monthIndex - 1, budget.startDay);
+    let prevMonthYear = year;
+    let prevMonthIndex = monthIndex - 1;
+
+    // If previous month index is less than 0, roll back to December of the previous year
+    if (prevMonthIndex < 0) {
+      prevMonthYear -= 1;
+      prevMonthIndex = 11;
+    }
+
+    // Calculate the start current budget period
+    let startDate = new Date(prevMonthYear, prevMonthIndex, budget.startDay);
     if (budget.startDay === 1) {
       startDate = new Date(year, monthIndex, 1);
     }
 
-    let nextYear = year;
+    let nextMonthYear = year;
     let nextMonthIndex = monthIndex + 1;
 
     // If next month index exceeds December, roll over to January of the next year
     if (nextMonthIndex > 11) {
-      nextYear += 1;
+      nextMonthYear += 1;
       nextMonthIndex = 0;
     }
 
-    // Get the next month's start day if it exists
-    const nextMonthBudget = await prisma.budget.findUnique({
-      where: {
-        year_monthIndex_userId: {
-          userId: user.id,
-          year: nextYear,
-          monthIndex: nextMonthIndex,
-        },
-      },
-    });
-
-    let endDate = new Date(nextYear, nextMonthIndex, 1); // Default end date is the first day of the next month
-
-    // If the next month budget exists and has a start day, use it as the end date
-    if (nextMonthBudget) {
-      if (nextMonthBudget.startDay === 1) {
-        endDate = new Date(nextYear, nextMonthIndex, 1);
-      } else {
-        endDate = new Date(year, monthIndex, nextMonthBudget.startDay);
-      }
-    }
+    // Calculate the end of the current budget period
+    let endDate = new Date(nextMonthYear, nextMonthIndex, 1); // Default end date is the first day of the next month
 
     // If an end day is provided, use it as the end date
-    if (endDay) {
-      endDate = new Date(year, monthIndex, endDay);
+    if (endDay !== undefined) {
+      if (endDay > 1) {
+        endDate = new Date(year, monthIndex, endDay);
+      }
+    } else {
+      // Get the next month's start day if it exists
+      const nextMonthBudget = await prisma.budget.findUnique({
+        where: {
+          year_monthIndex_userId: {
+            userId: user.id,
+            year: nextMonthYear,
+            monthIndex: nextMonthIndex,
+          },
+        },
+      });
+
+      // If the next month budget exists and has a start day, use it as the end date
+      if (nextMonthBudget) {
+        if (nextMonthBudget.startDay === 1) {
+          endDate = new Date(nextMonthYear, nextMonthIndex, 1);
+        } else {
+          endDate = new Date(year, monthIndex, nextMonthBudget.startDay);
+        }
+      }
     }
 
     // Sum all transactions for the user within the budget period, grouped by type
