@@ -26,17 +26,17 @@ export default async function BudgetPage({
   // Fetch data for the budget month
   const budgetData = await fetchBudgetWithItems(year, monthIndex);
 
-  const { year: prevMonthYear, monthIndex: prevMonthIndex } = getPrevMonth(
-    year,
-    monthIndex
-  );
-  const hasPrevMonthBudget = await checkIfBudgetExists(
-    prevMonthYear,
-    prevMonthIndex
-  );
-
   // Display create new budget if no budget exists for the month
   if (!budgetData) {
+    const { year: prevMonthYear, monthIndex: prevMonthIndex } = getPrevMonth(
+      year,
+      monthIndex
+    );
+    const hasPrevMonthBudget = await checkIfBudgetExists(
+      prevMonthYear,
+      prevMonthIndex
+    );
+
     return (
       <main className="flex h-full flex-col items-center justify-center gap-2 p-4">
         <NewBudget

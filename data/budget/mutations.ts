@@ -60,7 +60,7 @@ export async function createBudget(
       return { ok: false, errorCode: "NOT_FOUND" };
     }
 
-    budgetItemsToCreate = queryRes.data.budgetItems.map((item) => item);
+    budgetItemsToCreate = queryRes.data.budgetItems;
   } else {
     const queryRes = await safeQuery(fetchAllCategoryIds);
 
