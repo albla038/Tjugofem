@@ -10,7 +10,7 @@ export const budgetFormSchema = z.object({
 
 export const budgetCreateSchema = z.object({
   year: z.number().int().positive(),
-  monthIndex: z.number().int().positive(),
+  monthIndex: z.number().int().min(0).max(11),
   startDate: z.date(),
   copyPrevMonth: z.boolean().default(false),
 });
