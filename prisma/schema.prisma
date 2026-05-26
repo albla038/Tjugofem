@@ -48,8 +48,43 @@ model Category {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   transactions Transaction[]
+  budgetItems  BudgetItem[]
 
   @@map("categories")
+}
+
+model BudgetItem {
+  id           String @id @default(cuid(2))
+  limitInCents Int
+
+  budget     Budget   @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+  budgetId   String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([budgetId, categoryId])
+  @@map("budget_items")
+}
+
+model Budget {
+  id                    String   @id @default(cuid(2))
+  year                  Int
+  monthIndex            Int
+  startDate             DateTime
+  openingBalanceInCents Int
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  budgetItems BudgetItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([year, monthIndex, userId])
+  @@map("budgets")
 }
 
 model User {
@@ -64,6 +99,7 @@ model User {
   accounts      Account[]
   categories    Category[]
   transactions  Transaction[]
+  budgets       Budget[]
 
   @@map("users")
 }
