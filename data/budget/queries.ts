@@ -3,6 +3,7 @@ import "server-only";
 import prisma from "@/lib/db";
 import { requireUser } from "@/data/user/verify-user";
 import { Prisma } from "@/lib/generated/prisma/client";
+import { getNextMonth } from "@/lib/utils";
 
 const budgetWithBudgetItemInclude = {
   budgetItems: {
@@ -114,13 +115,10 @@ export async function calculateBudgetClosingBalance({
       // Otherwise, determine the end date based on the next month's budget
       // or default to the 1st of the next month
     } else {
-      let nextMonthYear = year;
-      let nextMonthIndex = monthIndex + 1;
-      // If next month index exceeds December, roll over to January of the next year
-      if (nextMonthIndex > 11) {
-        nextMonthYear += 1;
-        nextMonthIndex = 0;
-      }
+      const { year: nextMonthYear, monthIndex: nextMonthIndex } = getNextMonth(
+        year,
+        monthIndex
+      );
 
       // Get the next month's start day if it exists
       const nextMonthBudget = await prisma.budget.findUnique({

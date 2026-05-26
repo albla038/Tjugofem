@@ -11,6 +11,7 @@ import {
   calculateBudgetClosingBalance,
   fetchBudgetWithItems,
 } from "@/data/budget/queries";
+import { getPrevMonth } from "@/lib/utils";
 
 export async function createBudget(
   data: BudgetCreate
@@ -19,13 +20,10 @@ export async function createBudget(
 
   const { copyPrevMonth, ...budgetData } = data;
 
-  // Calculate the previous month and year properly
-  let prevMonthIndex = data.monthIndex - 1;
-  let prevYear = data.year;
-  if (prevMonthIndex < 0) {
-    prevMonthIndex = 11;
-    prevYear -= 1;
-  }
+  const { year: prevYear, monthIndex: prevMonthIndex } = getPrevMonth(
+    data.year,
+    data.monthIndex
+  );
 
   // Get the closing balance from the previous month to set as opening balance for the new budget
   const queryRes = await safeQuery(() =>
