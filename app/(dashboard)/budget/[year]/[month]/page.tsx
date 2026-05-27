@@ -1,8 +1,8 @@
 import NewBudget from "@/app/(dashboard)/budget/[year]/[month]/_components/new-budget";
 import { paramsSchema } from "@/app/(dashboard)/budget/[year]/[month]/schemas";
 import {
+  calculateBudgetSummary,
   checkIfBudgetExists,
-  fetchBudgetWithItems,
 } from "@/data/budget/queries";
 import { requireUser } from "@/data/user/verify-user";
 import { getPrevMonth } from "@/lib/utils";
@@ -24,7 +24,7 @@ export default async function BudgetPage({
   const currentMonthDate = new Date(year, monthIndex);
 
   // Fetch data for the budget month
-  const budgetData = await fetchBudgetWithItems(year, monthIndex);
+  const budgetData = await calculateBudgetSummary(year, monthIndex);
 
   // Display create new budget if no budget exists for the month
   if (!budgetData) {
