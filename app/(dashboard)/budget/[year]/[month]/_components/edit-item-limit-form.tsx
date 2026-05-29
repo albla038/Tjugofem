@@ -43,14 +43,12 @@ function getErrorMessage(errorCode: ActionErrorCode) {
 
 type EditBudgetItemLimitFormProps = {
   budgetItemId: string;
-  categoryName: string;
   currentLimitInCents: number;
   onClose: () => void;
 };
 
 export default function EditBudgetItemLimitForm({
   budgetItemId,
-  categoryName,
   currentLimitInCents,
   onClose,
 }: EditBudgetItemLimitFormProps) {
@@ -77,7 +75,7 @@ export default function EditBudgetItemLimitForm({
         return;
       }
 
-      toast.success(`Budgetgräns för "${categoryName}" uppdaterades`);
+      toast.success("Budgeten uppdaterades");
       onClose();
     });
   }
