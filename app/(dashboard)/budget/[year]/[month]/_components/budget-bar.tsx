@@ -21,7 +21,7 @@ export default function BudgetBar({
 
   const [textWidths, setTextWidths] = useState({ spent: 0, remaining: 0 });
 
-  const barColor = reduceOpacity ? color.slice(0, -2) + "66" : color;
+  const barColor = reduceOpacity ? color + "66" : color;
   const textColor = getContrastColor(barColor);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export default function BudgetBar({
     });
   }, [target, spent]);
 
-  const fraction = Math.min((spent / target) * 100, 100);
+  const fraction = target === 0 ? 100 : Math.min((spent / target) * 100, 100);
   const includeTarget = fraction < 80;
 
   const remaining = target - spent;
