@@ -1,6 +1,7 @@
 import NewBudget from "@/app/(dashboard)/budget/[year]/[month]/_components/new-budget";
 import { paramsSchema } from "@/app/(dashboard)/budget/[year]/[month]/schemas";
 import {
+  calculateBudgetClosingBalance,
   calculateBudgetSummary,
   checkIfBudgetExists,
 } from "@/data/budget/queries";
@@ -10,6 +11,7 @@ import { notFound } from "next/navigation";
 import BudgetItem from "./_components/budget-item";
 import TypeSummaryItem from "./_components/type-summary-item";
 import { ItemGroup } from "@/components/ui/item";
+import BalanceSummaries from "@/app/(dashboard)/budget/[year]/[month]/_components/balance-summaries";
 
 export default async function BudgetPage({
   params,
@@ -50,8 +52,25 @@ export default async function BudgetPage({
     );
   }
 
+  const { year: prevMonthYear, monthIndex: prevMonthIndex } = getPrevMonth(
+    year,
+    monthIndex
+  );
+
+  const prevMonthClosingBalanceInCents = await calculateBudgetClosingBalance({
+    monthIndex: prevMonthIndex,
+    year: prevMonthYear,
+  });
+
   return (
     <main className="flex flex-col gap-6 p-4">
+      <BalanceSummaries
+        openingBalanceInCents={budgetData.openingBalanceInCents}
+        currentBalanceInCents={budgetData.currentBalanceInCents}
+        plannedClosingBalanceInCents={budgetData.plannedClosingBalanceInCents}
+        prevMonthClosingBalanceInCents={prevMonthClosingBalanceInCents}
+      />
+
       <ItemGroup>
         <TypeSummaryItem
           name="PLANERAD INKOMST"
