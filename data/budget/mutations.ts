@@ -3,7 +3,7 @@ import "server-only";
 import { requireUser } from "@/data/user/verify-user";
 import prisma from "@/lib/db";
 import { BudgetItemCreateManyBudgetInput } from "@/lib/generated/prisma/models";
-import { BudgetCreate } from "@/schemas/budget";
+import { BudgetCreate, BudgetItemLimitUpdate } from "@/schemas/budget";
 import { MutationResult } from "@/types/results";
 import { fetchAllCategoryIds } from "@/data/category/queries";
 import { safeQuery } from "@/lib/safe-query";
@@ -12,6 +12,7 @@ import {
   fetchBudgetWithItems,
 } from "@/data/budget/queries";
 import { getPrevMonth } from "@/lib/utils";
+import { Prisma } from "@/lib/generated/prisma/client";
 
 export async function createBudget(
   data: BudgetCreate
@@ -93,6 +94,41 @@ export async function createBudget(
       `Failed to create new budget for user ${user.id} and month ${data.monthIndex + 1}/${data.year}`,
       error
     );
+    return { ok: false, errorCode: "INTERNAL_ERROR" };
+  }
+}
+
+export async function updateBudgetItemLimit(
+  data: BudgetItemLimitUpdate
+): Promise<MutationResult> {
+  const user = await requireUser();
+
+  try {
+    await prisma.budgetItem.update({
+      where: {
+        id: data.budgetItemId,
+        // Ensure the user owns this budget item
+        budget: {
+          userId: user.id,
+        },
+      },
+
+      data: {
+        limitInCents: data.newLimitInCents,
+      },
+    });
+
+    return { ok: true, data: undefined };
+  } catch (error) {
+    console.error(error);
+
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
+      return { ok: false, errorCode: "NOT_FOUND" };
+    }
+
     return { ok: false, errorCode: "INTERNAL_ERROR" };
   }
 }
