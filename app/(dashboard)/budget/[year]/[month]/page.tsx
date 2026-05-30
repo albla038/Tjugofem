@@ -7,6 +7,9 @@ import {
 import { requireUser } from "@/data/user/verify-user";
 import { getPrevMonth } from "@/lib/utils";
 import { notFound } from "next/navigation";
+import BudgetItem from "./_components/budget-item";
+import TypeSummaryItem from "./_components/type-summary-item";
+import { ItemGroup } from "@/components/ui/item";
 
 export default async function BudgetPage({
   params,
@@ -48,8 +51,44 @@ export default async function BudgetPage({
   }
 
   return (
-    <main>
-      <pre>{JSON.stringify(budgetData, null, 2)}</pre>
+    <main className="flex flex-col gap-6 p-4">
+      <ItemGroup>
+        <TypeSummaryItem
+          name="PLANERAD INKOMST"
+          currentValueInCents={budgetData.current.incomeSumInCents}
+          plannedValueInCents={budgetData.planned.incomeSumInCents}
+        />
+
+        <TypeSummaryItem
+          name="PLANERADE UTGIFTER"
+          currentValueInCents={budgetData.current.expenseSumInCents}
+          plannedValueInCents={budgetData.planned.expenseSumInCents}
+        />
+
+        <TypeSummaryItem
+          name="PLANERAT SPARANDE"
+          currentValueInCents={budgetData.current.savingsSumInCents}
+          plannedValueInCents={budgetData.planned.savingsSumInCents}
+        />
+      </ItemGroup>
+
+      <ItemGroup>
+        {budgetData.budgetItems.INCOME.map((item) => (
+          <BudgetItem item={item} key={item.categoryId} />
+        ))}
+      </ItemGroup>
+
+      <ItemGroup>
+        {budgetData.budgetItems.EXPENSE.map((item) => (
+          <BudgetItem item={item} key={item.categoryId} />
+        ))}{" "}
+      </ItemGroup>
+
+      <ItemGroup>
+        {budgetData.budgetItems.SAVING.map((item) => (
+          <BudgetItem item={item} key={item.categoryId} />
+        ))}
+      </ItemGroup>
     </main>
   );
 }
