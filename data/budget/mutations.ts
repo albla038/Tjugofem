@@ -3,7 +3,11 @@ import "server-only";
 import { requireUser } from "@/data/user/verify-user";
 import prisma from "@/lib/db";
 import { BudgetItemCreateManyBudgetInput } from "@/lib/generated/prisma/models";
-import { BudgetCreate, BudgetItemLimitUpdate } from "@/schemas/budget";
+import {
+  BudgetCreate,
+  BudgetItemLimitUpdate,
+  BudgetOpeningBalanceUpdate,
+} from "@/schemas/budget";
 import { MutationResult } from "@/types/results";
 import { fetchAllCategoryIds } from "@/data/category/queries";
 import { safeQuery } from "@/lib/safe-query";
@@ -115,6 +119,39 @@ export async function updateBudgetItemLimit(
 
       data: {
         limitInCents: data.newLimitInCents,
+      },
+    });
+
+    return { ok: true, data: undefined };
+  } catch (error) {
+    console.error(error);
+
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
+      return { ok: false, errorCode: "NOT_FOUND" };
+    }
+
+    return { ok: false, errorCode: "INTERNAL_ERROR" };
+  }
+}
+
+export async function updateBudgetOpeningBalance(
+  data: BudgetOpeningBalanceUpdate
+): Promise<MutationResult> {
+  const user = await requireUser();
+
+  try {
+    await prisma.budget.update({
+      where: {
+        id: data.budgetId,
+        // Ensure the user owns this budget
+        userId: user.id,
+      },
+
+      data: {
+        openingBalanceInCents: data.newOpeningBalanceInCents,
       },
     });
 
