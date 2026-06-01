@@ -98,13 +98,13 @@ export default async function BudgetPage({
       {/* Display summary items for income and savings */}
       <ItemGroup>
         <TypeSummaryItem
-          name="PLANERAD INKOMST"
+          name="Summa inkomster"
           currentValueInCents={budgetData.current.incomeSumInCents}
           plannedValueInCents={budgetData.planned.incomeSumInCents}
         />
 
         <TypeSummaryItem
-          name="PLANERAT SPARANDE"
+          name="Summa sparande"
           currentValueInCents={budgetData.current.savingsSumInCents}
           plannedValueInCents={budgetData.planned.savingsSumInCents}
         />
