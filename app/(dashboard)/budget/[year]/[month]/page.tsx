@@ -12,6 +12,14 @@ import BudgetItem from "./_components/budget-item";
 import TypeSummaryItem from "./_components/type-summary-item";
 import { ItemGroup } from "@/components/ui/item";
 import BalanceSummaries from "@/app/(dashboard)/budget/[year]/[month]/_components/balance-summaries";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import RadialChart from "./_components/radial-chart";
 
 export default async function BudgetPage({
   params,
@@ -64,24 +72,35 @@ export default async function BudgetPage({
 
   return (
     <main className="flex flex-col gap-6 p-4">
-      <BalanceSummaries
-        openingBalanceInCents={budgetData.openingBalanceInCents}
-        currentBalanceInCents={budgetData.currentBalanceInCents}
-        plannedClosingBalanceInCents={budgetData.plannedClosingBalanceInCents}
-        prevMonthClosingBalanceInCents={prevMonthClosingBalanceInCents}
-      />
+      {/* Display card with a summary card of the current balance vs the budget result */}
+      <Card className="flex flex-col">
+        <CardHeader className="justify-center text-center">
+          <CardTitle className="tracking-wider text-muted-foreground uppercase">
+            Summa utgifter
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex-1 pb-0">
+          <RadialChart
+            valueInCents={budgetData.current.expenseSumInCents}
+            maxValueInCents={budgetData.planned.expenseSumInCents}
+            label="utgifter"
+            showPercentage={true}
+          />
+        </CardContent>
+        <CardFooter>
+          <BalanceSummaries
+            budgetData={budgetData}
+            prevMonthClosingBalanceInCents={prevMonthClosingBalanceInCents}
+          />
+        </CardFooter>
+      </Card>
 
+      {/* Display summary items for income and savings */}
       <ItemGroup>
         <TypeSummaryItem
           name="PLANERAD INKOMST"
           currentValueInCents={budgetData.current.incomeSumInCents}
           plannedValueInCents={budgetData.planned.incomeSumInCents}
-        />
-
-        <TypeSummaryItem
-          name="PLANERADE UTGIFTER"
-          currentValueInCents={budgetData.current.expenseSumInCents}
-          plannedValueInCents={budgetData.planned.expenseSumInCents}
         />
 
         <TypeSummaryItem
@@ -91,6 +110,7 @@ export default async function BudgetPage({
         />
       </ItemGroup>
 
+      {/* Display budget standings for each category */}
       <ItemGroup>
         {budgetData.budgetItems.INCOME.map((item) => (
           <BudgetItem item={item} key={item.categoryId} />
