@@ -8,7 +8,6 @@ import {
 import { requireUser } from "@/data/user/verify-user";
 import { getPrevMonth } from "@/lib/utils";
 import { notFound } from "next/navigation";
-import BudgetItem from "./_components/budget-item";
 import TypeSummaryItem from "./_components/type-summary-item";
 import { ItemGroup } from "@/components/ui/item";
 import BalanceSummaries from "@/app/(dashboard)/budget/[year]/[month]/_components/balance-summaries";
@@ -20,6 +19,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import RadialChart from "./_components/radial-chart";
+import BudgetItemGroup from "@/app/(dashboard)/budget/[year]/[month]/_components/budget-item-group";
+import { Separator } from "@/components/ui/separator";
 
 export default async function BudgetPage({
   params,
@@ -71,7 +72,7 @@ export default async function BudgetPage({
   });
 
   return (
-    <main className="flex flex-col gap-6 p-4">
+    <main className="flex flex-col gap-8 p-4">
       {/* Display card with a summary card of the current balance vs the budget result */}
       <Card className="flex flex-col">
         <CardHeader className="justify-center text-center">
@@ -110,24 +111,29 @@ export default async function BudgetPage({
         />
       </ItemGroup>
 
+      <Separator />
+
       {/* Display budget standings for each category */}
-      <ItemGroup>
-        {budgetData.budgetItems.INCOME.map((item) => (
-          <BudgetItem item={item} key={item.categoryId} />
-        ))}
-      </ItemGroup>
+      <section className="flex flex-col gap-8">
+        <BudgetItemGroup
+          title="Inkomster"
+          items={budgetData.budgetItems.INCOME}
+        />
 
-      <ItemGroup>
-        {budgetData.budgetItems.EXPENSE.map((item) => (
-          <BudgetItem item={item} key={item.categoryId} />
-        ))}{" "}
-      </ItemGroup>
+        <Separator />
 
-      <ItemGroup>
-        {budgetData.budgetItems.SAVING.map((item) => (
-          <BudgetItem item={item} key={item.categoryId} />
-        ))}
-      </ItemGroup>
+        <BudgetItemGroup
+          title="Utgifter"
+          items={budgetData.budgetItems.EXPENSE}
+        />
+
+        <Separator />
+
+        <BudgetItemGroup
+          title="Sparande"
+          items={budgetData.budgetItems.SAVING}
+        />
+      </section>
     </main>
   );
 }
