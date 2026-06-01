@@ -5,6 +5,7 @@ import {
   ItemFooter,
 } from "@/components/ui/item";
 import BudgetBar from "./budget-bar";
+import { formatCentsToStrSEK } from "@/lib/utils";
 
 type TypeSummaryItemProps = {
   name: string;
@@ -22,14 +23,7 @@ export default function TypeSummaryItem({
       ? 100
       : Math.round(100 * (currentValueInCents / plannedValueInCents));
 
-  const plannedValueString = (plannedValueInCents / 100).toLocaleString(
-    "sv-SE",
-    {
-      style: "currency",
-      currency: "SEK",
-      maximumFractionDigits: 0,
-    }
-  );
+  const plannedValueString = formatCentsToStrSEK(plannedValueInCents, 0);
 
   return (
     <Item variant="muted">

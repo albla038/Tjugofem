@@ -9,6 +9,7 @@ import {
 } from "recharts";
 
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
+import { formatCentsToStrSEK } from "@/lib/utils";
 
 function computeEndAngle(
   value: number,
@@ -60,16 +61,8 @@ export default function RadialChart({
   const percentage = Math.round((valueInCents / maxValueInCents) * 100);
   if (maxValueInCents === 0) showPercentage = false;
 
-  const maxValueString = (maxValueInCents / 100).toLocaleString("sv-SE", {
-    style: "currency",
-    currency: "SEK",
-    maximumFractionDigits: 0,
-  });
-
-  const valueString = (valueInCents / 100).toLocaleString("sv-SE", {
-    style: "currency",
-    currency: "SEK",
-  });
+  const maxValueString = formatCentsToStrSEK(maxValueInCents, 0);
+  const valueString = formatCentsToStrSEK(valueInCents);
 
   return (
     <ChartContainer

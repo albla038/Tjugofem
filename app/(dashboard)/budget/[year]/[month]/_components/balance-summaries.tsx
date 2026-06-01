@@ -7,7 +7,7 @@ import { useState } from "react";
 import Drawer from "@/components/drawer";
 import EditBudgetOpeningBalanceForm from "@/app/(dashboard)/budget/[year]/[month]/_components/edit-opening-balance-form";
 import { BudgetSummary } from "@/types/budget";
-import { formatCentsToSEK } from "@/lib/utils";
+import { formatCentsToStrSEK } from "@/lib/utils";
 
 type BalanceSummariesProps = {
   budgetData: BudgetSummary;
@@ -40,15 +40,15 @@ export default function BalanceSummaries({
         )
       : null;
 
-  const openingBalanceString = formatCentsToSEK(openingBalanceInCents);
-  const currentBalanceString = formatCentsToSEK(currentBalanceInCents);
-  const plannedClosingBalanceString = formatCentsToSEK(
+  const openingBalanceString = formatCentsToStrSEK(openingBalanceInCents);
+  const currentBalanceString = formatCentsToStrSEK(currentBalanceInCents);
+  const plannedClosingBalanceString = formatCentsToStrSEK(
     plannedClosingBalanceInCents
   );
 
   const prevMonthClosingBalanceString =
     prevMonthClosingBalanceInCents !== null
-      ? formatCentsToSEK(prevMonthClosingBalanceInCents)
+      ? formatCentsToStrSEK(prevMonthClosingBalanceInCents)
       : null;
 
   return (

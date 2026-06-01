@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
 import { MUTATION_ERROR_MESSAGE_FALLBACK } from "@/lib/error-message-fallbacks";
-import { formatCentsToSEK } from "@/lib/utils";
+import { formatCentsToStrSEK } from "@/lib/utils";
 import {
   BudgetOpeningBalanceUpdate,
   BudgetOpeningBalanceUpdateForm,
@@ -71,7 +71,7 @@ export default function EditBudgetOpeningBalanceForm({
 
   const prevMonthClosingBalanceString =
     prevMonthClosingBalanceInCents !== null
-      ? formatCentsToSEK(prevMonthClosingBalanceInCents)
+      ? formatCentsToStrSEK(prevMonthClosingBalanceInCents)
       : null;
 
   function handleSubmit(data: BudgetOpeningBalanceUpdateForm) {

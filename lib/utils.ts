@@ -31,9 +31,13 @@ export function getContrastColor(hexColor: string) {
   return Y >= 128 ? "var(--foreground)" : "var(--background)";
 }
 
-export function formatCentsToSEK(cents: number) {
+export function formatCentsToStrSEK(
+  cents: number,
+  maximumFractionDigits?: number
+) {
   return (cents / 100).toLocaleString("sv-SE", {
     style: "currency",
     currency: "SEK",
+    maximumFractionDigits,
   });
 }

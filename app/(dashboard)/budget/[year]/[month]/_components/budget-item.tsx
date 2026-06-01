@@ -15,6 +15,7 @@ import { useState } from "react";
 import Drawer from "@/components/drawer";
 import EditBudgetItemLimitForm from "./edit-item-limit-form";
 import { MoreVertical } from "lucide-react";
+import { formatCentsToStrSEK } from "@/lib/utils";
 
 export default function BudgetItem({
   item,
@@ -61,11 +62,7 @@ export default function BudgetItem({
               {category.name}
             </ItemDescription>
             <ItemTitle className="text-2xl font-semibold tabular-nums">
-              {(limitInCents / 100).toLocaleString("sv-SE", {
-                style: "currency",
-                currency: "SEK",
-                maximumFractionDigits: 0,
-              })}
+              {formatCentsToStrSEK(limitInCents, 0)}
             </ItemTitle>
           </div>
           <ItemActions>
