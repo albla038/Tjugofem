@@ -46,15 +46,14 @@ export const budgetOpeningBalanceUpdateFormSchema = z.object({
     .min(1, "Ange ett belopp")
     .transform((val) => {
       const parsed = Number(val);
-      if (isNaN(parsed)) return -1; // Force it to fail the positive check if it's not a number
+      if (isNaN(parsed)) return 0;
       return parsed;
-    })
-    .pipe(z.number().positive("Ange ett positivt belopp")),
+    }),
 });
 
 export const budgetOpeningBalanceUpdateSchema = z.object({
   budgetId: z.cuid2(),
-  newOpeningBalanceInCents: z.number().positive(),
+  newOpeningBalanceInCents: z.number().int(),
 });
 
 export type BudgetOpeningBalanceUpdateForm = z.infer<
