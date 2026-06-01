@@ -90,7 +90,7 @@ export default function EditBudgetItemLimitForm({
           render={({ field, fieldState }) => (
             <Field>
               <FieldContent>
-                <FieldLabel htmlFor={field.name}>Ange ny summa</FieldLabel>
+                <FieldLabel htmlFor={field.name}>Ange nytt belopp</FieldLabel>
               </FieldContent>
 
               <InputGroup>

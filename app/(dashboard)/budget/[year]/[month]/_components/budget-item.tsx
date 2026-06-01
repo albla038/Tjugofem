@@ -27,15 +27,19 @@ export default function BudgetItem({
   const [isEditing, setIsEditing] = useState(false);
 
   let categoryTranslated: string;
+  let actionDescription: string;
   switch (category.type) {
     case "EXPENSE":
       categoryTranslated = "utgift";
+      actionDescription = `Ange ny budget för "${category.name}"`;
       break;
     case "INCOME":
       categoryTranslated = "inkomst";
+      actionDescription = `Ange ny förväntad inkomst för "${category.name}"`;
       break;
     default:
       categoryTranslated = "besparing";
+      actionDescription = `Ange nytt sparmål för "${category.name}"`;
   }
 
   // Calculate percentages and handle division by zero
@@ -88,7 +92,7 @@ export default function BudgetItem({
 
       <Drawer
         title={`Redigera ${categoryTranslated}`}
-        description={`Ange ny summa för ${category.name}`}
+        description={actionDescription}
         open={isEditing}
         onOpenChange={setIsEditing}
       >
