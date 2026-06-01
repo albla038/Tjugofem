@@ -21,14 +21,14 @@ function computeEndAngle(
   const fullTurn = isCounterclockwise ? -360 : 360;
 
   if (maxValue === 0 && value === 0) {
-    endAngle = fullTurn + startAngle;
+    endAngle = fullTurn;
   } else if (maxValue === 0) {
-    endAngle = fullTurn + startAngle;
+    endAngle = fullTurn;
   } else {
-    endAngle = (value / maxValue) * fullTurn + 90;
+    endAngle = Math.min(value / maxValue, 1.0) * fullTurn;
   }
 
-  return endAngle;
+  return endAngle + startAngle;
 }
 
 type BudgetChartProps = {
