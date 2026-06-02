@@ -1,5 +1,5 @@
 import { CATEGORY_ICON_MAP } from "@/lib/category-icon-map";
-import { cn } from "@/lib/utils";
+import { cn, getContrastColor } from "@/lib/utils";
 
 function stringToColor(str: string) {
   // Generate a hash from the input string
@@ -15,18 +15,6 @@ function stringToColor(str: string) {
     color += `00${value.toString(16)}`.slice(-2);
   }
   return color;
-}
-
-function getContrastColor(hexColor: string) {
-  const hex = hexColor.replace("#", "");
-  const r = parseInt(hex.substring(0, 2), 16);
-  const g = parseInt(hex.substring(2, 4), 16);
-  const b = parseInt(hex.substring(4, 6), 16);
-
-  // Calculate perceived brightness (YIQ formula)
-  const Y = (r * 299 + g * 587 + b * 114) / 1000;
-
-  return Y >= 128 ? "var(--foreground)" : "var(--background)";
 }
 
 type CategoryIconProps = {

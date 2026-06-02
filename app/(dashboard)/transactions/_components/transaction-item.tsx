@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/item";
 import { TransactionWithCategory } from "@/data/transaction/queries";
 import { Category } from "@/lib/generated/prisma/client";
-import { cn } from "@/lib/utils";
+import { cn, formatCentsToStrSEK } from "@/lib/utils";
 import { CopyPlus, MoreVertical, Trash2 } from "lucide-react";
 import { useState } from "react";
 
@@ -40,10 +40,7 @@ export default function TransactionItem({
   const [isDeleteAlertOpen, setDeleteAlertOpen] = useState(false);
 
   const date = item.date.toLocaleDateString("sv-SE");
-  const amount = (item.amountInCents / 100).toLocaleString("sv-SE", {
-    style: "currency",
-    currency: "SEK",
-  });
+  const amount = formatCentsToStrSEK(item.amountInCents);
   const isExpense = item.type === "EXPENSE";
   const amountString = isExpense ? `-${amount}` : amount;
 

@@ -1,0 +1,137 @@
+"use client";
+
+import { Separator } from "@/components/ui/separator";
+import { BadgeAlert, Pen } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
+import Drawer from "@/components/drawer";
+import EditBudgetOpeningBalanceForm from "@/app/(dashboard)/budget/[year]/[month]/_components/edit-opening-balance-form";
+import { BudgetSummary } from "@/types/budget";
+import { formatCentsToStrSEK } from "@/lib/utils";
+
+type BalanceSummariesProps = {
+  budgetData: BudgetSummary;
+  prevMonthClosingBalanceInCents: number | null;
+};
+
+export default function BalanceSummaries({
+  budgetData,
+  prevMonthClosingBalanceInCents,
+}: BalanceSummariesProps) {
+  const {
+    currentBalanceInCents,
+    openingBalanceInCents,
+    plannedClosingBalanceInCents,
+  } = budgetData;
+
+  const [isEditingOpeningBalance, setIsEditingOpeningBalance] = useState(false);
+
+  const isOpeningBalanceDifferent =
+    prevMonthClosingBalanceInCents !== null
+      ? prevMonthClosingBalanceInCents !== openingBalanceInCents
+      : false;
+
+  const openingBalanceString = formatCentsToStrSEK(openingBalanceInCents);
+  const currentBalanceString = formatCentsToStrSEK(currentBalanceInCents);
+  const plannedClosingBalanceString = formatCentsToStrSEK(
+    plannedClosingBalanceInCents
+  );
+
+  const prevMonthClosingBalanceString =
+    prevMonthClosingBalanceInCents !== null
+      ? formatCentsToStrSEK(prevMonthClosingBalanceInCents)
+      : null;
+
+  return (
+    <>
+      <div className="w-full">
+        <div
+          className="flex w-full items-center justify-between py-3"
+          onClick={() => setIsEditingOpeningBalance(true)}
+        >
+          <span className="text-sm text-muted-foreground">Ingående saldo</span>
+
+          {isOpeningBalanceDifferent ? (
+            <Badge className="bg-yellow-50 text-sm font-semibold text-yellow-700 tabular-nums dark:bg-yellow-950 dark:text-yellow-300">
+              {openingBalanceString}
+              <Pen />
+            </Badge>
+          ) : (
+            <Badge
+              variant="secondary"
+              className="text-sm font-semibold tabular-nums"
+            >
+              {openingBalanceString}
+              <Pen />
+            </Badge>
+          )}
+        </div>
+
+        <Separator />
+
+        <div className="flex w-full items-center justify-between py-3 text-sm">
+          <span className="text-muted-foreground">Utgående saldo</span>
+
+          <span className="font-semibold tabular-nums">
+            {currentBalanceString}
+          </span>
+        </div>
+
+        <Separator />
+
+        <div className="flex w-full items-center justify-between py-3 text-sm">
+          <span className="text-muted-foreground">Planerat resultat</span>
+
+          <span className="font-semibold tabular-nums">
+            {plannedClosingBalanceString}
+          </span>
+        </div>
+      </div>
+
+      <Drawer
+        open={isEditingOpeningBalance}
+        onOpenChange={setIsEditingOpeningBalance}
+        title="Ingående saldo"
+        description="Här kan redigera månadens ingående saldo"
+      >
+        <div className="flex flex-col gap-6">
+          {prevMonthClosingBalanceString && (
+            <div className="flex flex-col gap-2">
+              <p>
+                Föregående månads utgående saldo:{" "}
+                {isOpeningBalanceDifferent ? (
+                  <Badge className="bg-yellow-50 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-300">
+                    <span className="font-semibold tabular-nums">
+                      {prevMonthClosingBalanceString}
+                    </span>
+                    <BadgeAlert />
+                  </Badge>
+                ) : (
+                  <span className="font-semibold tabular-nums">
+                    {prevMonthClosingBalanceString}
+                  </span>
+                )}
+              </p>
+              {isOpeningBalanceDifferent && (
+                <>
+                  <p>
+                    Ingående saldo överrensstämmer inte med föregående månads
+                    utgående saldo.
+                  </p>
+                  <p> Om det är avsiktligt så kan du ignorera detta.</p>
+                </>
+              )}
+            </div>
+          )}
+
+          <EditBudgetOpeningBalanceForm
+            budgetId={budgetData.id}
+            currentOpeningBalanceInCents={openingBalanceInCents}
+            prevMonthClosingBalanceInCents={prevMonthClosingBalanceInCents}
+            onClose={() => setIsEditingOpeningBalance(false)}
+          />
+        </div>
+      </Drawer>
+    </>
+  );
+}
