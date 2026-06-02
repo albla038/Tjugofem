@@ -71,23 +71,21 @@ export default function TransactionList({
 
   return (
     <>
-      <ScrollArea className="h-svh">
-        {monthGroups.map(({ monthKey, transactions }) => (
-          <TransactionGroup
-            key={monthKey}
-            groupTitle={monthKey.charAt(0).toUpperCase() + monthKey.slice(1)}
-          >
-            {transactions.map((transaction) => (
-              <TransactionItem
-                key={transaction.id}
-                item={transaction}
-                categories={categories}
-                onDuplicate={handleDuplicateTransaction}
-              />
-            ))}
-          </TransactionGroup>
-        ))}
-      </ScrollArea>
+      {monthGroups.map(({ monthKey, transactions }) => (
+        <TransactionGroup
+          key={monthKey}
+          groupTitle={monthKey.charAt(0).toUpperCase() + monthKey.slice(1)}
+        >
+          {transactions.map((transaction) => (
+            <TransactionItem
+              key={transaction.id}
+              item={transaction}
+              categories={categories}
+              onDuplicate={handleDuplicateTransaction}
+            />
+          ))}
+        </TransactionGroup>
+      ))}
 
       <Button
         size="icon-lg"
