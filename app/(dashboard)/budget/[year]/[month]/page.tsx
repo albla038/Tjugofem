@@ -52,7 +52,7 @@ export default async function BudgetPage({
     );
 
     return (
-      <main className="flex h-full flex-col items-center justify-center gap-2 p-4">
+      <main className="flex h-full min-h-[calc(100svh-52px)] flex-col items-center justify-center gap-2 p-4">
         <NewBudget
           currentMonthDate={currentMonthDate}
           hasPrevMonthBudget={hasPrevMonthBudget}

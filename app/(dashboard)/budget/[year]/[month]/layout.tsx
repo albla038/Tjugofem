@@ -1,9 +1,10 @@
 import { paramsSchema } from "@/app/(dashboard)/budget/[year]/[month]/schemas";
+import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, MoreVertical } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -36,28 +37,40 @@ export default async function BudgetLayout({
 
   return (
     <ScrollArea className="flex h-svh flex-col">
-      <div className="flex justify-center">
+      <Header>
         <div className="flex items-center">
-          <Button asChild variant="ghost" size="icon-lg">
-            <Link
-              href={`/budget/${previousMonthDate.getFullYear()}/${previousMonthDate.getMonth() + 1}`}
-            >
-              <ChevronLeft className="size-4" />
-            </Link>
-          </Button>
-          <h1 className="w-24 text-center font-bold">
+          <h1 className="font-bold">
+            Budget{" "}
             {currentMonthString.charAt(0).toLocaleUpperCase() +
               currentMonthString.slice(1)}
           </h1>
-          <Button asChild variant="ghost" size="icon">
-            <Link
-              href={`/budget/${nextMonthDate.getFullYear()}/${nextMonthDate.getMonth() + 1}`}
-            >
-              <ChevronRight className="size-4" />
-            </Link>
+
+          <div className="flex items-center">
+            <Button asChild variant="ghost" className="pr-1">
+              <Link
+                href={`/budget/${previousMonthDate.getFullYear()}/${previousMonthDate.getMonth() + 1}`}
+              >
+                <ChevronLeft className="size-4" />
+              </Link>
+            </Button>
+
+            <Button asChild variant="ghost" className="pl-1">
+              <Link
+                href={`/budget/${nextMonthDate.getFullYear()}/${nextMonthDate.getMonth() + 1}`}
+              >
+                <ChevronRight className="size-4" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+
+        <div className="ml-auto">
+          {/* // TODO: Add dropdown menu */}
+          <Button variant="ghost">
+            <MoreVertical />
           </Button>
         </div>
-      </div>
+      </Header>
 
       {children}
     </ScrollArea>
