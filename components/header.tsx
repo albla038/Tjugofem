@@ -11,7 +11,7 @@ export default function Header({ children, className }: HeaderProps) {
   return (
     <header
       className={cn(
-        "sticky top-0 z-10 box-border flex h-[52px] items-center gap-2 border-b border-border bg-background p-2 shadow-xs",
+        "sticky top-0 z-10 flex items-center gap-2 border-b border-border bg-background p-2 shadow-xs",
         className
       )}
     >

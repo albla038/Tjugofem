@@ -36,7 +36,7 @@ export default async function BudgetLayout({
   });
 
   return (
-    <ScrollArea className="flex h-svh flex-col">
+    <div className="flex h-svh flex-col">
       <Header>
         <div className="flex items-center">
           <h1 className="font-bold">
@@ -72,7 +72,7 @@ export default async function BudgetLayout({
         </div>
       </Header>
 
-      {children}
-    </ScrollArea>
+      <ScrollArea className="h-full min-h-0">{children}</ScrollArea>
+    </div>
   );
 }
