@@ -11,6 +11,7 @@ import { Category } from "@/lib/generated/prisma/client";
 import { TransactionFormInput } from "@/schemas/transaction";
 import { Plus } from "lucide-react";
 import { useState } from "react";
+import EmptyTransactionList from "./empty-list";
 
 function groupTransactionsByMonth(transactions: TransactionWithCategory[]) {
   const groups = new Map<string, TransactionWithCategory[]>();
@@ -71,21 +72,27 @@ export default function TransactionList({
 
   return (
     <>
-      {monthGroups.map(({ monthKey, transactions }) => (
-        <TransactionGroup
-          key={monthKey}
-          groupTitle={monthKey.charAt(0).toUpperCase() + monthKey.slice(1)}
-        >
-          {transactions.map((transaction) => (
-            <TransactionItem
-              key={transaction.id}
-              item={transaction}
-              categories={categories}
-              onDuplicate={handleDuplicateTransaction}
-            />
+      {transactions.length === 0 ? (
+        <EmptyTransactionList />
+      ) : (
+        <>
+          {monthGroups.map(({ monthKey, transactions }) => (
+            <TransactionGroup
+              key={monthKey}
+              groupTitle={monthKey.charAt(0).toUpperCase() + monthKey.slice(1)}
+            >
+              {transactions.map((transaction) => (
+                <TransactionItem
+                  key={transaction.id}
+                  item={transaction}
+                  categories={categories}
+                  onDuplicate={handleDuplicateTransaction}
+                />
+              ))}
+            </TransactionGroup>
           ))}
-        </TransactionGroup>
-      ))}
+        </>
+      )}
 
       <Button
         size="icon-lg"

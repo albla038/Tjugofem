@@ -9,7 +9,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Calendar1, Menu, ReceiptEuro, Shapes } from "lucide-react";
+import { Calendar1, Menu, Shapes, Wallet } from "lucide-react";
 import Link from "next/link";
 
 export default function NavSheet() {
@@ -38,7 +38,7 @@ export default function NavSheet() {
             href="/transactions"
             className="flex items-center gap-2 text-xl font-medium"
           >
-            <ReceiptEuro />
+            <Wallet />
             Transaktioner
           </Link>
           <Link
