@@ -41,8 +41,8 @@ export default function TransactionItem({
 
   const date = item.date.toLocaleDateString("sv-SE");
   const amount = formatCentsToStrSEK(item.amountInCents);
-  const isExpense = item.type === "EXPENSE";
-  const amountString = isExpense ? `-${amount}` : amount;
+  const isIncome = item.type === "INCOME";
+  const amountString = isIncome ? amount : `- ${amount}`;
 
   return (
     <>
