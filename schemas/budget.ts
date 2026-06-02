@@ -27,12 +27,12 @@ export const budgetItemLimitUpdateFormSchema = z.object({
       if (isNaN(parsed)) return -1; // Force it to fail the positive check if it's not a number
       return parsed;
     })
-    .pipe(z.number().positive("Ange ett positivt belopp")),
+    .pipe(z.number().nonnegative("Ange ett positivt belopp")),
 });
 
 export const budgetItemLimitUpdateSchema = z.object({
   budgetItemId: z.cuid2(),
-  newLimitInCents: z.number().positive(),
+  newLimitInCents: z.number().int().nonnegative(),
 });
 
 export type BudgetItemLimitUpdateForm = z.infer<
