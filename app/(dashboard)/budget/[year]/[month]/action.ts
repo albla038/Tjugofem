@@ -43,7 +43,7 @@ export async function createBudgetAction(
   }
 
   // Purge cache
-  revalidatePath(`/budget/${data.year}/${data.monthIndex + 1}`);
+  revalidatePath("/budget/[year]/[month]", "page");
 
   return { success: true, data: undefined };
 }
