@@ -5,8 +5,8 @@ export default async function CategorySettingsPage() {
   const categories = await fetchAllCategories();
 
   return (
-    <div>
+    <main>
       <CategoryList categories={categories} />
-    </div>
+    </main>
   );
 }
