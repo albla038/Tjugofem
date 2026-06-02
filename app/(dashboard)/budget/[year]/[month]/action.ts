@@ -2,6 +2,7 @@
 
 import {
   createBudget,
+  deleteBudget,
   updateBudgetItemLimit,
   updateBudgetOpeningBalance,
 } from "@/data/budget/mutations";
@@ -16,6 +17,10 @@ import {
 } from "@/schemas/budget";
 import { ActionResponse } from "@/types/results";
 import { revalidatePath } from "next/cache";
+import z from "zod";
+
+// Local schemas
+const idSchema = z.cuid2();
 
 export async function createBudgetAction(
   data: BudgetCreate
@@ -38,7 +43,7 @@ export async function createBudgetAction(
   }
 
   // Purge cache
-  revalidatePath(`/budget/${data.year}/${data.monthIndex + 1}`);
+  revalidatePath("/budget/[year]/[month]", "page");
 
   return { success: true, data: undefined };
 }
@@ -64,7 +69,7 @@ export async function updateBudgetItemLimitAction(
   }
 
   // Revalidate cache
-  revalidatePath("/budget/[year]/[month]");
+  revalidatePath("/budget/[year]/[month]", "page");
 
   return { success: true, data: undefined };
 }
@@ -90,7 +95,31 @@ export async function updateBudgetOpeningBalanceAction(
   }
 
   // Revalidate cache
-  revalidatePath("/budget/[year]/[month]");
+  revalidatePath("/budget/[year]/[month]", "page");
+
+  return { success: true, data: undefined };
+}
+
+export async function deleteBudgetAction(id: string): Promise<ActionResponse> {
+  // Authenticate user
+  await requireUser();
+
+  // Validate input data
+  const validated = idSchema.safeParse(id);
+
+  if (!validated.success) {
+    return { success: false, errorCode: "VALIDATION_FAILED" };
+  }
+
+  // Call DAL mutation
+  const mutationRes = await deleteBudget(validated.data);
+
+  if (!mutationRes.ok) {
+    return { success: false, errorCode: mutationRes.errorCode };
+  }
+
+  // Revalidate cache
+  revalidatePath("/budget/[year]/[month]", "page");
 
   return { success: true, data: undefined };
 }

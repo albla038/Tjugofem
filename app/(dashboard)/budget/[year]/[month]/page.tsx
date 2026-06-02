@@ -21,6 +21,8 @@ import {
 import RadialChart from "./_components/radial-chart";
 import BudgetItemGroup from "@/app/(dashboard)/budget/[year]/[month]/_components/budget-item-group";
 import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import BudgetHeader from "@/app/(dashboard)/budget/[year]/[month]/_components/budget-header";
 
 export default async function BudgetPage({
   params,
@@ -52,7 +54,9 @@ export default async function BudgetPage({
     );
 
     return (
-      <main className="flex h-full min-h-[calc(100svh-100px)] flex-col items-center justify-center gap-2 p-4">
+      <main className="flex h-svh flex-col justify-between">
+        <BudgetHeader currentMonthDate={currentMonthDate} />
+
         <NewBudget
           currentMonthDate={currentMonthDate}
           hasPrevMonthBudget={hasPrevMonthBudget}
@@ -72,68 +76,77 @@ export default async function BudgetPage({
   });
 
   return (
-    <main className="flex flex-col gap-8 p-4">
-      {/* Display card with a summary card of the current balance vs the budget result */}
-      <Card className="flex flex-col">
-        <CardHeader className="justify-center text-center">
-          <CardTitle className="tracking-wider text-muted-foreground uppercase">
-            Summa utgifter
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="flex-1 pb-0">
-          <RadialChart
-            valueInCents={budgetData.current.expenseSumInCents}
-            maxValueInCents={budgetData.planned.expenseSumInCents}
-            label="utgifter"
-            showPercentage={true}
-          />
-        </CardContent>
-        <CardFooter>
-          <BalanceSummaries
-            budgetData={budgetData}
-            prevMonthClosingBalanceInCents={prevMonthClosingBalanceInCents}
-          />
-        </CardFooter>
-      </Card>
+    <div className="flex h-svh flex-col">
+      <BudgetHeader
+        currentMonthDate={currentMonthDate}
+        budgetId={budgetData.id}
+      />
 
-      {/* Display summary items for income and savings */}
-      <ItemGroup>
-        <TypeSummaryItem
-          name="Summa inkomster"
-          currentValueInCents={budgetData.current.incomeSumInCents}
-          plannedValueInCents={budgetData.planned.incomeSumInCents}
-        />
+      <ScrollArea className="h-full min-h-0">
+        <main className="flex flex-col gap-8 p-4">
+          {/* Display card with a summary card of the current balance vs the budget result */}
+          <Card className="flex flex-col">
+            <CardHeader className="justify-center text-center">
+              <CardTitle className="tracking-wider text-muted-foreground uppercase">
+                Summa utgifter
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex-1 pb-0">
+              <RadialChart
+                valueInCents={budgetData.current.expenseSumInCents}
+                maxValueInCents={budgetData.planned.expenseSumInCents}
+                label="utgifter"
+                showPercentage={true}
+              />
+            </CardContent>
+            <CardFooter>
+              <BalanceSummaries
+                budgetData={budgetData}
+                prevMonthClosingBalanceInCents={prevMonthClosingBalanceInCents}
+              />
+            </CardFooter>
+          </Card>
 
-        <TypeSummaryItem
-          name="Summa sparande"
-          currentValueInCents={budgetData.current.savingsSumInCents}
-          plannedValueInCents={budgetData.planned.savingsSumInCents}
-        />
-      </ItemGroup>
+          {/* Display summary items for income and savings */}
+          <ItemGroup>
+            <TypeSummaryItem
+              name="Summa inkomster"
+              currentValueInCents={budgetData.current.incomeSumInCents}
+              plannedValueInCents={budgetData.planned.incomeSumInCents}
+            />
 
-      <Separator />
+            <TypeSummaryItem
+              name="Summa sparande"
+              currentValueInCents={budgetData.current.savingsSumInCents}
+              plannedValueInCents={budgetData.planned.savingsSumInCents}
+            />
+          </ItemGroup>
 
-      {/* Display budget standings for each category */}
-      <section className="flex flex-col gap-8">
-        <BudgetItemGroup
-          title="Inkomster"
-          items={budgetData.budgetItems.INCOME}
-        />
+          <Separator />
 
-        <Separator />
+          {/* Display budget standings for each category */}
+          <section className="flex flex-col gap-8">
+            <BudgetItemGroup
+              title="Inkomster"
+              items={budgetData.budgetItems.INCOME}
+            />
 
-        <BudgetItemGroup
-          title="Utgifter"
-          items={budgetData.budgetItems.EXPENSE}
-        />
+            <Separator />
 
-        <Separator />
+            <BudgetItemGroup
+              title="Utgifter"
+              items={budgetData.budgetItems.EXPENSE}
+            />
 
-        <BudgetItemGroup
-          title="Sparande"
-          items={budgetData.budgetItems.SAVING}
-        />
-      </section>
-    </main>
+            <Separator />
+
+            <BudgetItemGroup
+              title="Sparande"
+              items={budgetData.budgetItems.SAVING}
+            />
+          </section>
+        </main>
+      </ScrollArea>
+    </div>
   );
 }
