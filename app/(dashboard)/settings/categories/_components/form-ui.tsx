@@ -58,8 +58,8 @@ export default function CategoryFormUI({
       })}
       noValidate
     >
-      <FieldGroup>
-        <div className="grid gap-2">
+      <FieldGroup className="gap-1">
+        <div className="grid h-[135.25px]">
           {/* Name */}
           <Controller
             control={form.control}
@@ -67,21 +67,23 @@ export default function CategoryFormUI({
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor={field.name}>Namn</FieldLabel>
-                <InputGroup>
-                  <InputGroupInput
-                    {...field}
-                    id={field.name}
-                    autoComplete="off"
-                    placeholder="Ange fritext..."
-                    aria-invalid={fieldState.invalid}
-                  />
-                  <InputGroupAddon align="inline-end">
-                    <Pen />
-                  </InputGroupAddon>
-                </InputGroup>
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
+                <div className="grid gap-1">
+                  <InputGroup>
+                    <InputGroupInput
+                      {...field}
+                      id={field.name}
+                      autoComplete="off"
+                      placeholder="Ange fritext..."
+                      aria-invalid={fieldState.invalid}
+                    />
+                    <InputGroupAddon align="inline-end">
+                      <Pen />
+                    </InputGroupAddon>
+                  </InputGroup>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} className="mb-2" />
+                  )}
+                </div>
               </Field>
             )}
           />
@@ -106,7 +108,7 @@ export default function CategoryFormUI({
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4 mb-6">
           {/* Color */}
           <Controller
             control={form.control}

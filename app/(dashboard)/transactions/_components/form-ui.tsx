@@ -74,8 +74,8 @@ export default function TransactionFormUI({
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
-      <FieldGroup>
-        <div className="grid gap-2">
+      <FieldGroup className="gap-1">
+        <div className="grid h-[135.25px]">
           {/* Amount */}
           <Controller
             control={form.control}
@@ -83,26 +83,28 @@ export default function TransactionFormUI({
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor={field.name}>Belopp</FieldLabel>
-                <InputGroup>
-                  <InputGroupInput
-                    {...field}
-                    id={field.name}
-                    placeholder="200"
-                    autoComplete="off"
-                    type="number"
-                    step="0.01"
-                    aria-invalid={fieldState.invalid}
-                  />
-                  <InputGroupAddon align="inline-start">
-                    <Coins />
-                  </InputGroupAddon>
-                  <InputGroupAddon align="inline-end">
-                    <InputGroupText>SEK</InputGroupText>
-                  </InputGroupAddon>
-                </InputGroup>
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
+                <div className="grid gap-1">
+                  <InputGroup>
+                    <InputGroupInput
+                      {...field}
+                      id={field.name}
+                      placeholder="200"
+                      autoComplete="off"
+                      type="number"
+                      step="0.01"
+                      aria-invalid={fieldState.invalid}
+                    />
+                    <InputGroupAddon align="inline-start">
+                      <Coins />
+                    </InputGroupAddon>
+                    <InputGroupAddon align="inline-end">
+                      <InputGroupText>SEK</InputGroupText>
+                    </InputGroupAddon>
+                  </InputGroup>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} className="mb-2" />
+                  )}
+                </div>
               </Field>
             )}
           />
@@ -140,19 +142,23 @@ export default function TransactionFormUI({
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor={field.name}>Namn</FieldLabel>
-              <InputGroup>
-                <InputGroupInput
-                  {...field}
-                  id={field.name}
-                  autoComplete="off"
-                  placeholder="Ange fritext..."
-                  aria-invalid={fieldState.invalid}
-                />
-                <InputGroupAddon>
-                  <Pen />
-                </InputGroupAddon>
-              </InputGroup>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              <div className="grid h-15 gap-1">
+                <InputGroup>
+                  <InputGroupInput
+                    {...field}
+                    id={field.name}
+                    autoComplete="off"
+                    placeholder="Ange fritext..."
+                    aria-invalid={fieldState.invalid}
+                  />
+                  <InputGroupAddon>
+                    <Pen />
+                  </InputGroupAddon>
+                </InputGroup>
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </div>
             </Field>
           )}
         />
@@ -198,25 +204,27 @@ export default function TransactionFormUI({
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor={field.name}>Kategori</FieldLabel>
-                <Select {...field} onValueChange={field.onChange}>
-                  <SelectTrigger id={field.name}>
-                    <SelectValue placeholder="Välj kategori..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {filteredCategories.map((category) => {
-                      const Icon = CATEGORY_ICON_MAP[category.icon];
-                      return (
-                        <SelectItem value={category.id} key={category.id}>
-                          <Icon />
-                          {category.name}
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
+                <div className="flex h-15 flex-col gap-1">
+                  <Select {...field} onValueChange={field.onChange}>
+                    <SelectTrigger id={field.name} className="w-full">
+                      <SelectValue placeholder="Välj kategori..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {filteredCategories.map((category) => {
+                        const Icon = CATEGORY_ICON_MAP[category.icon];
+                        return (
+                          <SelectItem value={category.id} key={category.id}>
+                            <Icon />
+                            {category.name}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </div>
               </Field>
             )}
           />
