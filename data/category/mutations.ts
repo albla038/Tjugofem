@@ -1,3 +1,5 @@
+import "server-only";
+
 import prisma from "@/lib/db";
 import { CategoryCreate, CategoryUpdate } from "@/schemas/category";
 import { User } from "better-auth";
