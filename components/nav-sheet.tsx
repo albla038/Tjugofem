@@ -21,10 +21,6 @@ export default function NavSheet() {
 
   const user = session?.user;
 
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth() + 1;
-
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -41,7 +37,7 @@ export default function NavSheet() {
 
         <nav className="flex flex-col gap-4 px-4">
           <Link
-            href={`/budget/${year}/${month}`}
+            href="/budget"
             className="flex items-center gap-2 text-xl font-medium"
           >
             <Calendar1 /> Månadsbudgetar
