@@ -1,18 +1,26 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+
 import {
   Sheet,
   SheetContent,
   SheetDescription,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { authClient } from "@/lib/auth-client";
 import { Calendar1, Menu, Shapes, Wallet } from "lucide-react";
 import Link from "next/link";
+import NavUser from "./nav-user";
 
 export default function NavSheet() {
+  const { data: session } = authClient.useSession();
+
+  const user = session?.user;
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -49,6 +57,12 @@ export default function NavSheet() {
             Kategorier
           </Link>
         </nav>
+
+        {!!user && (
+          <SheetFooter>
+            <NavUser user={user} />
+          </SheetFooter>
+        )}
       </SheetContent>
     </Sheet>
   );
