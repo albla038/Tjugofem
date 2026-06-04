@@ -1,5 +1,14 @@
 # TDDD27 - Tjugofem
 
+## Screencasts (Swedish)
+
+[Project screencast](https://youtu.be/LBAAgd_rxnU)
+
+
+[Albert Lännerström - individual screencast](https://youtu.be/gFrho1pJoJE)
+
+[Mikaela Adolfsson - individual screencast](https://youtu.be/aaA3ZYz47XI)
+
 ## 1. Project Overview
 
 - **Concept:** A personal finance tracker designed to help students and young adults manage their spending habits. Users can log their transactions, categorize expenses, and set monthly budgets to gain insights into their financial health.
